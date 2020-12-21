@@ -1,0 +1,21 @@
+# Changelog
+All notable changes to "Bastián González-Bustamante Public Presentations" will be documented in this file.
+
+## [Unreleased]
+
+## [0.3.0] - TBC
+### Added
+- Badges in SVG.
+
+## [Released]
+
+## [0.2.0] - 2020-12-21
+### Added
+- Changelog in TXT format at GitHub repository.
+- 2018/19 Americas Barometer datasets and codebooks.
+
+## [0.1.0] - 2020-12-10
+### Added
+- GitHub repository.
+- License CC-BY Attribution 4.0 International at GitHub repository.
+- Beamer Presentation Universidad de Talca (December, 2020).
