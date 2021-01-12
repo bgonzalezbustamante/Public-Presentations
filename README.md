@@ -1,4 +1,4 @@
 # Public-Presentations
 
 **Bastián González-Bustamante** \
-https://bgonzalezbustamante.com/
+https://bgonzalezbustamante.com
