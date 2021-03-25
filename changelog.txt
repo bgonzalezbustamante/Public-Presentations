@@ -5,7 +5,7 @@ All notable changes to "Bastián González-Bustamante Public Presentations" will
 
 ## [0.3.0] - TBC
 ### Added
-- Badges in SVG.
+- Badges in SVG at GitHub repository.
 
 ## [Released]
 
