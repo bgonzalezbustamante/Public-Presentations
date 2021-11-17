@@ -10,6 +10,10 @@ WIP
 
 WIP
 
+## License
+
+These presentations are released under a [Creative Commons Attribution 4.0 International license (CC BY 4.0)](LICENSE.md). This open-access license allows the data to be shared, reused, adapted as long as appropriate acknowledgement is given.
+
 ## Author
 
 Bastián González-Bustamante \
