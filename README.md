@@ -14,6 +14,10 @@ The GitHub repository has controlled access with Two-Factor Authentication (2FA)
 
 WIP
 
+### 2020
+
+- González-Bustamante, B. (2020). *Evolution and Early Governmental Responses to COVID-19 in South America*. Presentation delivered at the Workshop of the School of Political Science and Public Administration at the Universidad de Talca, Virtual. [In Spanish] [**[Permalink]**](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2020/Beamer-UTalca-2020.pdf)
+
 ## License
 
 These presentations are released under a [Creative Commons Attribution 4.0 International license (CC BY 4.0)](LICENSE.md). This open-access license allows the data to be shared, reused, adapted as long as appropriate acknowledgement is given.
