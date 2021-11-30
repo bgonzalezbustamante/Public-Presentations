@@ -38,9 +38,8 @@ The GitHub repository has controlled access with Two-Factor Authentication (2FA)
 
 These presentations are released under a [Creative Commons Attribution 4.0 International license (CC BY 4.0)](LICENSE.md). This open-access license allows the data to be shared, reused, adapted as long as appropriate acknowledgement is given.
 
-## Author
+### About Me
 
-Bastián González-Bustamante \
-bastian.gonzalezbustamante@politics.ox.ac.uk \
-[ORCID iD 0000-0003-1510-6820](https://orcid.org/0000-0003-1510-6820) \
-https://bgonzalezbustamante.com 
+I am completing my DPhil (PhD) dissertation in the [Department of Politics and International Relations](https://www.politics.ox.ac.uk/) and [St Hilda's College](https://www.sthildas.ox.ac.uk/) at the [University of Oxford](http://www.ox.ac.uk/), United Kingdom. I am currently based in Oxford, working on my research. Furthermore, I am an Instructor Professor in the Management and Public Policies Department at the [Faculty of Administration and Economics](https://fae.usach.cl/) at the Universidad de Santiago de Chile.
+
+Further details on my website [bgonzalezbustamante.com](https://bgonzalezbustamante.com/).
