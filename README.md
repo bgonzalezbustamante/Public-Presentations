@@ -4,7 +4,7 @@
 
 ## Overview
 
-WIP
+This repository contains a selection of Bastián González-Bustamante's recent public presentations at seminars and conferences in LaTeX Beamer format.
 
 ## Store and Backup
 
