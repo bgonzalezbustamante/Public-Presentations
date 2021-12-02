@@ -6,10 +6,6 @@
 
 This repository contains a selection of Bastián González-Bustamante's recent public presentations at seminars and conferences in LaTeX Beamer format.
 
-## Store and Backup
-
-The GitHub repository has controlled access with Two-Factor Authentication (2FA) with two physical USB security devices (Bastián González-Bustamante, [ORCID iD 0000-0003-1510-6820](https://orcid.org/0000-0003-1510-6820)). Both USB keys issue one-time passwords to generate a cryptographic authentication FIDO2 and U2F.
-
 ## Selected Conference Presentations
 
 ### 2021
