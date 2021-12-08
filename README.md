@@ -8,6 +8,14 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ## Selected Conference Presentations
 
+### 2022
+
+- González-Bustamante, B. (2022). *Resignation Calls and Dismissals of Ministers in Latin America*. Presentation delivered at the XXXIX International Congress of the Latin American Studies Association, San Francisco, USA. **[forthcoming]**
+
+- González-Bustamante, B. (2022). *Resignation Calls and Ministerial Turnover in Latin America*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. **[forthcoming]**
+
+- González-Bustamante, B., \& Cisternas, C. (2022). *Seniority and Cosponsorship in the Chilean Lower House 2006-2018*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. **[forthcoming]**
+
 ### 2021
 
 - González-Bustamante, B. (2021). *The Use of Machine Learning for Public Affairs Research*. Presentation delivered the XII Chilean Congress of Public Administration, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-Congreso-AP-2021.pdf)**
