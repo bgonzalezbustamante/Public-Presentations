@@ -14,7 +14,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 - González-Bustamante, B. (2022). *Resignation Calls and Ministerial Turnover in Latin America*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[Forthcoming]**
 
-- González-Bustamante, B., \& Cisternas, C. (2022). *Seniority and Cosponsorship in the Chilean Lower House 2006-2018*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[Forthcoming]**
+- González-Bustamante, B., & Cisternas, C. (2022). *Seniority and Cosponsorship in the Chilean Lower House 2006-2018*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[Forthcoming]**
 
 ### 2021
 
