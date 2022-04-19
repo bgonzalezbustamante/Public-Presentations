@@ -10,6 +10,8 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ### 2022
 
+- González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Local Governments*. TBC.
+
 - González-Bustamante, B. (2022). *Resignation Calls and Dismissals of Ministers in Latin America*. Presentation delivered at the XXXIX International Congress of the Latin American Studies Association, San Francisco, USA. [In English] **[Forthcoming]**
 
 - González-Bustamante, B. (2022). *Resignation Calls and Ministerial Turnover in Latin America*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-RC-2022.pdf)**
