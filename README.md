@@ -18,6 +18,8 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 - González-Bustamante, B. (2022). *Resignation Calls and Dismissals of Ministers in Latin America*. Presentation delivered at the XXXIX International Congress of the Latin American Studies Association, Virtual. [In English] **[Forthcoming]**.
 
+- González-Bustamante, B. (2022). *Insights of a Number of Ongoing Research on Elites in Latin America: Topics, Methods and Possibilities for Comparison*. Presentation delivered at the XXXIX International Congress of the Latin American Studies Association, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LASA-Round-Table-2022.pdf)**.
+
 - González-Bustamante, B. (2022). *Resignation Calls and Ministerial Turnover in Latin America*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-RC-2022.pdf)**.
 
 - González-Bustamante, B., & Cisternas, C. (2022). *Seniority and Cosponsorship in the Chilean Lower House 2006-2018*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-Seniority-2022.pdf)**.
