@@ -14,7 +14,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 - González-Bustamante, B. (2022). *Quantitative Methods for Studying Elites: Practical Applications, Biases and Potential.* [In Spanish] **[To Be Confirmed]**.
 
-- González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Municipalities*. [In Spanish] **[To Be Confirmed]**.
+- González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Municipalities*. Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish]
 
 - González-Bustamante, B. (2022). *Resignation Calls and Dismissals of Ministers in Latin America: Data Gathering using NLP and Machine Learning*. Presentation delivered at the XXXIX International Congress of the Latin American Studies Association, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LASA-RC-2022.pdf)**.
 
