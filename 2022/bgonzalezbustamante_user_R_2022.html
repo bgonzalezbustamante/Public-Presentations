@@ -792,7 +792,7 @@ ggplot(subset(ead_set, year &gt; 1989 &amp; year &lt; 2015),
 ]
 
 .pull-right[
-![](bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+&lt;img src="bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-12-1.png" title="LOESS estimation of presidential approval between 1990 and 2014 in Brazil and Chile. Our quarterly exposure variable to low presidential approval takes a positive value at the end of the observed interval when approval is below 40 points. We took this methodological decision because, in Latin America, there is strong evidence of quadratic cyclical approval dynamics and smoothed plots for all administrations show that the lowest point during an average term after the honeymoon effect is 40-45 points" alt="LOESS estimation of presidential approval between 1990 and 2014 in Brazil and Chile. Our quarterly exposure variable to low presidential approval takes a positive value at the end of the observed interval when approval is below 40 points. We took this methodological decision because, in Latin America, there is strong evidence of quadratic cyclical approval dynamics and smoothed plots for all administrations show that the lowest point during an average term after the honeymoon effect is 40-45 points"  /&gt;
 ]
 
 ---
@@ -823,7 +823,7 @@ ggsurvplot(fit.country, data = time_dep_data, title = NULL, conf.int = TRUE,
 ]
 
 .pull-right[
-&lt;img src="bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-14-1.png" title="Nonparametric Kaplan-Meier estimation based on individual ministerial terminations" alt="Nonparametric Kaplan-Meier estimation based on individual ministerial terminations"  /&gt;
+&lt;img src="bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-14-1.png" title="Nonparametric Kaplan-Meier estimation based on individual ministerial terminations between 1990 and 2014 in Brazil and Chile. The plot shows a 95% confidence interval and median survival. Although time is plotted in days, breaks on the X-axis are organised by years." alt="Nonparametric Kaplan-Meier estimation based on individual ministerial terminations between 1990 and 2014 in Brazil and Chile. The plot shows a 95% confidence interval and median survival. Although time is plotted in days, breaks on the X-axis are organised by years."  /&gt;
 ]
 
 ---
@@ -836,9 +836,10 @@ class: chapter-slide
 
 ## Time-Varying Exposure Cox Regressions
 
-Our baseline model does not include any covariates or specifications. 
 
-We then extended the equation incorporating moderating covariates `\(X_{j[i]}\)`, controlling for government and country fixed effects, including a vector of controls `\(C_k\)` with _k-th_ potential confounders that are subsequently used to estimate the propensity score, and clustering observations.
+For econometric estimation with observational data, we used an extension of Cox models which involved working with &lt;span style="color:orange"&gt;**non-proportional hazards**&lt;/span&gt; due to the data set's structure. The equation incorporates the effect of the `\(Z(t)\)` intervals of the multiple _i-th_ observations, considering them as clusters. 
+
+Our baseline model does not include any covariates or specifications. We then extended the equation incorporating moderating covariates `\(X_{j[i]}\)`, controlling for government and country fixed effects, including a vector of controls `\(C_k\)` with _k-th_ potential confounders that are subsequently used to estimate the propensity score, and clustering observations.
 
 Next, we incorporated the interaction effect between low presidential approval `\(D_{i}\)` and our covariates `\(X_{j[i]}\)`, denoting _j-th_ type covariates that are incorporated in separate models with the term `\(\delta_{j} D_{i} \times X_{j[i]}\)`.
 
@@ -876,7 +877,7 @@ love.plot(m_out_1, stat = "mean.diffs", poly = 1, abs = TRUE,
 ]
 
 .pull-right[
-![](bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+&lt;img src="bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-17-1.png" title="Standardised and absolute mean differences before and after matching. GDP growth, inflation and legislative ENP correspond to standardised average differences. The assessment of covariate balance and matching suggests the choice of the sample with full matching where only legislative ENP and inflation fail to balance." alt="Standardised and absolute mean differences before and after matching. GDP growth, inflation and legislative ENP correspond to standardised average differences. The assessment of covariate balance and matching suggests the choice of the sample with full matching where only legislative ENP and inflation fail to balance."  /&gt;
 ]
 
 ---
@@ -915,8 +916,8 @@ plot_model(labelled_model_1 , type = "int", mdrt.values = "minmax",
 ```
 ]
 
-.pull-left[
-![](bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+.pull-right[
+&lt;img src="bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-20-1.png" title="Predicted risk of presidential approval on individual nonpartisan and partisan minister terminations. Plotted from the matched sample considering the interaction between partisan and nonpartisan ministers in periods of below and above 40 per cent presidential approval. The risk for partisan ministers is significantly higher in periods of crisis. In contrast, the risk is comparatively lower for nonpartisan ministers, and there is no significant difference depending on the level of approval. Even in periods with approval below 40 points, the confidence interval and the risk of cabinet dismissal tend to decrease." alt="Predicted risk of presidential approval on individual nonpartisan and partisan minister terminations. Plotted from the matched sample considering the interaction between partisan and nonpartisan ministers in periods of below and above 40 per cent presidential approval. The risk for partisan ministers is significantly higher in periods of crisis. In contrast, the risk is comparatively lower for nonpartisan ministers, and there is no significant difference depending on the level of approval. Even in periods with approval below 40 points, the confidence interval and the risk of cabinet dismissal tend to decrease."  /&gt;
 ]
 
 ---
@@ -927,11 +928,11 @@ plot_model(labelled_model_1 , type = "int", mdrt.values = "minmax",
 
 - Or check my website [bgonzalezbustamante.com](https://bgonzalezbustamante.com/)
 
-- This [OSF view-only link](https://osf.io/asgbj/?view_only=144acd6c8eca4836880b57dee85ea4ff) offers access to the private project in progress, which contains the R demonstration in Markdown and an **early preprint** of the work more focused on the phenomenon than on methodological applications.
+- This [OSF view-only link](https://osf.io/asgbj/?view_only=144acd6c8eca4836880b57dee85ea4ff) offers access to the private project in progress, which contains the &lt;span style="color:orange"&gt;**R demonstration**&lt;/span&gt; in Markdown and an &lt;span style="color:orange"&gt;**early preprint**&lt;/span&gt; of the work more focused on the phenomenon than on methodological applications
 
-- The OSF project is connected with the private (for now) repository _time-dep-cabinet-data_ on GitHub, which hosts the complete R code with version control and metadata.
+- The OSF project is connected with the private (for now) repository _time-dep-cabinet-data_ on GitHub, which hosts the complete R code with version control and metadata
 
-- This is the permalink to the latest version of this presentation
+- This is the [permalink](https://bgonzalezbustamante.github.io/Public-Presentations/2022/bgonzalezbustamante_user_R_2022) to the latest version of this presentation
 
 ---
 
