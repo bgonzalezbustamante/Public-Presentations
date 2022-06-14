@@ -1,0 +1,1126 @@
+---
+title: "Time-dependent data encoding and time-varying exposure survival models to study presidential crises"
+author: "Bastián González-Bustamante"
+date: "June 2022"
+output:
+  xaringan::moon_reader:
+    css: [useR, useR-fonts]
+    lib_dir: libs
+    nature:
+      ratio: 16:9
+---
+
+class: chapter-slide
+
+# Motivation
+
+```{css, echo=FALSE}
+.remark-slide-scaler {
+    overflow-y: auto;
+}
+```
+
+---
+
+## Motivation
+
+```{r setup, include = FALSE}
+options(htmltools.dir.version = FALSE)
+library(RefManageR)
+BibOptions(check.entries = FALSE, bib.style = "authoryear", style = "markdown",
+           hyperlink = FALSE, dashed = TRUE)
+bib <- ReadBib("bgonzalezbustamante_user_R_2022_files/BIB-userR.bib", .Encoding = "UTF-8")
+```
+
+Our main question is: How can a minister's attributes prevent his exit from the cabinet during periods of low presidential approval? 
+
+This presentations focuses on the specific procedure for correctly estimating effects and bias using the survival approach, which constitutes a substantial, novel methodological contribution. <span style="color:orange">**We will pay special attention to the encoding of the data technique**</span>.
+
+This contribution is relevant since straightforward modelling of the relationship between low approval and cabinet turnover may be biased and exposed to endogeneity because presidents or prime ministers tend to reshuffle their cabinets at times of low popularity <span style="color:orange">**`r Citep(bib, "MartinezGallardo2014")`**</span>
+
+---
+
+class: chapter-slide
+
+# Methods and Data
+
+---
+
+## Data
+
+First, we merged the data sets of <span style="color:orange">**`r Citet(bib, "Franz2016")`**</span> and <span style="color:orange">**`r Citet(bib, "GonzalezBustamante2022")`**</span> about ministers in Brazil and Chile between 1990 and 2014. 
+
+Both sets contain information about the ministers' attributes and trajectories and the exact dates on which they became and ceased to be ministers, which are particularly important for our empirical strategy. 
+
+We thereby obtained a set of <span style="color:orange">**488 observations**</span> that we coded as a time-dependent data set with quarterly cut-off points for the whole period in order to incorporate presidential approval and macroeconomic data as time-varying covariates.
+
+---
+
+## Data Cleaning Brazil
+
+```{r, echo = TRUE, eval = FALSE}
+## Data Brazil
+data_BRA <- read.csv("data/raw/cabinets_Brazil/BD_ministros_FHC_Lula.csv", sep = ",", 
+                     encoding = "UTF-8")
+data_BRA <- select(data_BRA, 1, 3, 5, 9:10, 12, 19:21, 23, 24, 104, 106, 109, 40)
+names(data_BRA)[1] = "id"
+names(data_BRA)[2] = "name"
+data_BRA$age <- trunc(as.numeric((as.Date.character(data_BRA$entrada_pasta, 
+                                                    format = "%d/%m/%Y") - 
+  as.Date.character(data_BRA$data_nascimento, format = "%d/%m/%Y")) / 365))
+data_BRA$data_nascimento <- NULL
+names(data_BRA)[3] = "sex"
+data_BRA$sex <- ifelse(data_BRA$sex == "masculino", "man", "woman")
+data_BRA$economist <- ifelse(data_BRA$ocupacao_profissional_resumida == "economista", 
+                             1, 0)
+data_BRA$lawyer <- ifelse(data_BRA$ocupacao_profissional_resumida == "advogado", 1, 0)
+data_BRA$ocupacao_profissional_resumida <- NULL
+names(data_BRA)[4] = "ministry"
+names(data_BRA)[5] = "president"
+names(data_BRA)[6] = "start_president"
+data_BRA$start_president <- as.Date.character(data_BRA$start_president, 
+                                              format = "%d/%m/%Y")
+names(data_BRA)[7] = "end_president"
+data_BRA$end_president <- as.Date.character(data_BRA$end_president, 
+                                            format = "%d/%m/%Y")
+names(data_BRA)[8] = "start_minister"
+data_BRA$start_minister <- as.Date.character(data_BRA$start_minister, 
+                                             format = "%d/%m/%Y")
+names(data_BRA)[9] = "end_minister"
+data_BRA$end_minister <- as.Date.character(data_BRA$end_minister, 
+                                           format = "%d/%m/%Y")
+names(data_BRA)[10] = "president_party" 
+data_BRA$president_party <- ifelse(data_BRA$president_party == "sim", 1, 0)
+data_BRA$non_party <- ifelse(data_BRA$partido_momento_nomeacao == "sem partido", 1, 0)
+data_BRA$partido_momento_nomeacao <- NULL
+names(data_BRA)[11] = "party_leader" 
+data_BRA$party_leader <- ifelse(data_BRA$party_leader == "sim", 1, 0)
+data_BRA$country <- "Brazil"
+data_BRA$phd <- ifelse(data_BRA$titulacao_pos == "doutor", 1, 0)
+data_BRA$titulacao_pos <- NULL
+data_BRA <- data_BRA[, c(1, 16, 2, 3, 12, 5:7, 4, 8, 9, 15, 11, 10, 13, 14, 17)]
+```
+
+---
+
+## Data Cleaning Chile
+
+```{r, echo = TRUE, eval = FALSE}
+## GitHub Repository
+github_1 <- "https://raw.githubusercontent.com/"
+github_2 <- "bgonzalezbustamante/chilean-ministers/main/data/tidy/"
+
+## Chilean Ministers Data
+chilean_ministers <- read.csv(paste(github_1, github_2, "Chilean_cabinets_1990_2014.csv", 
+                                    sep = ""), header = T, sep = ",", encoding = "UTF-8")
+
+data_CHL <- chilean_ministers
+data_CHL <- select(data_CHL, 1:12, 17, 13:15)
+data_CHL$start_president <- as.Date(data_CHL$start_president)
+data_CHL$end_president <- as.Date(data_CHL$end_president)
+data_CHL$start_minister <- as.Date(data_CHL$start_minister)
+data_CHL$end_minister <- as.Date(data_CHL$end_minister)
+
+## PhD Chilean cases
+data_CHL$phd <- c(0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+                  0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1,
+                  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0,
+                  0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0,
+                  0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
+                  0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0,
+                  0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1)
+```
+
+---
+
+## Merging Data Sets
+
+```{r, echo = TRUE, eval = FALSE}
+## Merge Data Sets
+data_BRA$id <- NULL
+data_CHL$id <- NULL
+data_cabinets <- add_row(data_BRA, data_CHL)
+data_cabinets <- cbind(id = rownames(data_cabinets), data_cabinets)
+data_cabinets$time_minister <- data_cabinets$end_minister - data_cabinets$start_minister
+
+## Save Clean Data
+write.csv(data_cabinets, "data/tidy/cabinets_Brazil_Chile.csv", fileEncoding = "UTF-8", 
+          row.names =  FALSE)
+```
+
+Then, we used the time-interval model of <span style="color:orange">**`r Citet(bib, "Therneau2020")`**</span> in which the base is encoded with cases that have multiple observations (_i-th_ ministers) to defined time intervals corresponding to the four quarters of each year: $q_1$, $q_2$, $q_3$ and $q_4$.
+
+---
+
+## Time-Dependent Data Encoding
+
+We generated a time event _T_ considering each interval $q_j$ and taking into account the individual ministerial terminations $Y_i$ by constructing intervals where $Z(t) = I(t > Y_i)$.
+
+.pull-left[
+```{r, echo = TRUE, eval = FALSE}
+## Quarters Points
+q_01 <- as.Date("1990-04-01") - 1
+q_02 <- as.Date("1990-07-01") - 1
+q_03 <- as.Date("1990-10-01") - 1
+q_04 <- as.Date("1991-01-01") - 1
+q_05 <- as.Date("1991-04-01") - 1 
+q_06 <- as.Date("1991-07-01") - 1
+q_07 <- as.Date("1991-10-01") - 1
+q_08 <- as.Date("1992-01-01") - 1
+q_09 <- as.Date("1992-04-01") - 1
+q_10 <- as.Date("1992-07-01") - 1
+q_11 <- as.Date("1992-10-01") - 1
+q_12 <- as.Date("1993-01-01") - 1
+q_13 <- as.Date("1993-04-01") - 1
+q_14 <- as.Date("1993-07-01") - 1
+q_15 <- as.Date("1993-10-01") - 1
+q_16 <- as.Date("1994-01-01") - 1
+q_17 <- as.Date("1994-04-01") - 1
+q_18 <- as.Date("1994-07-01") - 1
+q_19 <- as.Date("1994-10-01") - 1
+q_20 <- as.Date("1995-01-01") - 1
+q_21 <- as.Date("1996-04-01") - 1
+q_22 <- as.Date("1996-07-01") - 1
+q_23 <- as.Date("1996-10-01") - 1
+q_24 <- as.Date("1997-01-01") - 1
+q_25 <- as.Date("1997-04-01") - 1
+q_26 <- as.Date("1997-07-01") - 1
+q_27 <- as.Date("1997-10-01") - 1
+q_28 <- as.Date("1998-01-01") - 1
+q_29 <- as.Date("1998-04-01") - 1
+q_30 <- as.Date("1998-07-01") - 1
+q_31 <- as.Date("1998-10-01") - 1
+q_32 <- as.Date("1999-01-01") - 1
+q_33 <- as.Date("1999-04-01") - 1
+q_34 <- as.Date("1999-07-01") - 1
+q_35 <- as.Date("1999-10-01") - 1
+q_36 <- as.Date("2000-01-01") - 1
+q_37 <- as.Date("2000-04-01") - 1
+q_38 <- as.Date("2000-07-01") - 1
+q_39 <- as.Date("2000-10-01") - 1
+q_40 <- as.Date("2001-01-01") - 1
+q_41 <- as.Date("2001-04-01") - 1
+q_42 <- as.Date("2001-07-01") - 1
+q_43 <- as.Date("2001-10-01") - 1
+q_44 <- as.Date("2002-01-01") - 1
+q_45 <- as.Date("2002-04-01") - 1
+q_46 <- as.Date("2002-07-01") - 1
+q_47 <- as.Date("2002-10-01") - 1
+```
+]
+
+.pull-right[
+```{r, echo = TRUE, eval = FALSE}
+## Quarters Points
+q_48 <- as.Date("2003-01-01") - 1
+q_49 <- as.Date("2003-04-01") - 1
+q_50 <- as.Date("2003-07-01") - 1
+q_51 <- as.Date("2003-10-01") - 1
+q_52 <- as.Date("2004-01-01") - 1
+q_53 <- as.Date("2004-04-01") - 1
+q_54 <- as.Date("2004-07-01") - 1
+q_55 <- as.Date("2004-10-01") - 1
+q_56 <- as.Date("2005-01-01") - 1
+q_57 <- as.Date("2005-04-01") - 1
+q_58 <- as.Date("2005-07-01") - 1
+q_59 <- as.Date("2005-10-01") - 1
+q_60 <- as.Date("2006-01-01") - 1
+q_61 <- as.Date("2006-04-01") - 1
+q_62 <- as.Date("2006-07-01") - 1
+q_63 <- as.Date("2006-10-01") - 1
+q_64 <- as.Date("2007-01-01") - 1
+q_65 <- as.Date("2007-04-01") - 1
+q_66 <- as.Date("2007-07-01") - 1
+q_67 <- as.Date("2007-10-01") - 1
+q_68 <- as.Date("2008-01-01") - 1
+q_69 <- as.Date("2008-04-01") - 1
+q_70 <- as.Date("2008-07-01") - 1
+q_71 <- as.Date("2008-10-01") - 1
+q_72 <- as.Date("2009-01-01") - 1
+q_73 <- as.Date("2009-04-01") - 1
+q_74 <- as.Date("2009-07-01") - 1
+q_75 <- as.Date("2009-10-01") - 1
+q_76 <- as.Date("2010-01-01") - 1
+q_77 <- as.Date("2010-04-01") - 1
+q_78 <- as.Date("2010-07-01") - 1
+q_79 <- as.Date("2010-10-01") - 1
+q_80 <- as.Date("2011-01-01") - 1
+q_81 <- as.Date("2011-04-01") - 1
+q_82 <- as.Date("2011-07-01") - 1
+q_83 <- as.Date("2011-10-01") - 1
+q_84 <- as.Date("2012-01-01") - 1
+q_85 <- as.Date("2012-04-01") - 1
+q_86 <- as.Date("2012-07-01") - 1
+q_87 <- as.Date("2012-10-01") - 1
+q_88 <- as.Date("2013-01-01") - 1
+q_89 <- as.Date("2013-04-01") - 1
+q_90 <- as.Date("2013-07-01") - 1
+q_91 <- as.Date("2013-10-01") - 1
+q_92 <- as.Date("2014-01-01") - 1
+q_93 <- as.Date("2014-04-01") - 1
+```
+]
+
+---
+
+## Time-Dependent Data Encoding
+
+```{r, echo = TRUE, eval = FALSE}
+## Batch 01
+
+data_cabinets$etime_01 <- q_01 - data_cabinets$start_minister
+data_cabinets$etime_01 <- ifelse(data_cabinets$etime_01 > 0, data_cabinets$etime_01, NA)
+
+data_cabinets$etime_02 <- q_02 - data_cabinets$start_minister
+data_cabinets$etime_02 <- ifelse(data_cabinets$etime_02 > 0, data_cabinets$etime_02, NA)
+
+data_cabinets$etime_03 <- q_03 - data_cabinets$start_minister
+data_cabinets$etime_03 <- ifelse(data_cabinets$etime_03 > 0, data_cabinets$etime_03, NA)
+
+data_cabinets$etime_04 <- q_04 - data_cabinets$start_minister
+data_cabinets$etime_04 <- ifelse(data_cabinets$etime_04 > 0, data_cabinets$etime_04, NA)
+
+## Batch 02
+
+data_cabinets$etime_05 <- q_05 - data_cabinets$start_minister
+data_cabinets$etime_05 <- ifelse(data_cabinets$etime_05 > 0, data_cabinets$etime_05, NA)
+
+data_cabinets$etime_06 <- q_06 - data_cabinets$start_minister
+data_cabinets$etime_06 <- ifelse(data_cabinets$etime_06 > 0, data_cabinets$etime_06, NA)
+
+data_cabinets$etime_07 <- q_07 - data_cabinets$start_minister
+data_cabinets$etime_07 <- ifelse(data_cabinets$etime_07 > 0, data_cabinets$etime_07, NA)
+
+data_cabinets$etime_08 <- q_08 - data_cabinets$start_minister
+data_cabinets$etime_08 <- ifelse(data_cabinets$etime_08 > 0, data_cabinets$etime_08, NA)
+
+## Batch 03
+
+data_cabinets$etime_09 <- q_09 - data_cabinets$start_minister
+data_cabinets$etime_09 <- ifelse(data_cabinets$etime_09 > 0, data_cabinets$etime_09, NA)
+
+data_cabinets$etime_10 <- q_10 - data_cabinets$start_minister
+data_cabinets$etime_10 <- ifelse(data_cabinets$etime_10 > 0, data_cabinets$etime_10, NA)
+
+data_cabinets$etime_11 <- q_11 - data_cabinets$start_minister
+data_cabinets$etime_11 <- ifelse(data_cabinets$etime_11 > 0, data_cabinets$etime_11, NA)
+
+data_cabinets$etime_12 <- q_12 - data_cabinets$start_minister
+data_cabinets$etime_12 <- ifelse(data_cabinets$etime_12 > 0, data_cabinets$etime_12, NA)
+
+## Batch 04
+
+data_cabinets$etime_13 <- q_13 - data_cabinets$start_minister
+data_cabinets$etime_13 <- ifelse(data_cabinets$etime_13 > 0, data_cabinets$etime_13, NA)
+
+data_cabinets$etime_14 <- q_14 - data_cabinets$start_minister
+data_cabinets$etime_14 <- ifelse(data_cabinets$etime_14 > 0, data_cabinets$etime_14, NA)
+
+data_cabinets$etime_15 <- q_15 - data_cabinets$start_minister
+data_cabinets$etime_15 <- ifelse(data_cabinets$etime_15 > 0, data_cabinets$etime_15, NA)
+
+data_cabinets$etime_16 <- q_16 - data_cabinets$start_minister
+data_cabinets$etime_16 <- ifelse(data_cabinets$etime_16 > 0, data_cabinets$etime_16, NA)
+
+## Batch 05
+
+data_cabinets$etime_17 <- q_17 - data_cabinets$start_minister
+data_cabinets$etime_17 <- ifelse(data_cabinets$etime_17 > 0, data_cabinets$etime_17, NA)
+
+data_cabinets$etime_18 <- q_18 - data_cabinets$start_minister
+data_cabinets$etime_18 <- ifelse(data_cabinets$etime_18 > 0, data_cabinets$etime_18, NA)
+
+data_cabinets$etime_19 <- q_19 - data_cabinets$start_minister
+data_cabinets$etime_19 <- ifelse(data_cabinets$etime_19 > 0, data_cabinets$etime_19, NA)
+
+data_cabinets$etime_20 <- q_20 - data_cabinets$start_minister
+data_cabinets$etime_20 <- ifelse(data_cabinets$etime_20 > 0, data_cabinets$etime_20, NA)
+
+## Batch 06
+
+data_cabinets$etime_21 <- q_21 - data_cabinets$start_minister
+data_cabinets$etime_21 <- ifelse(data_cabinets$etime_21 > 0, data_cabinets$etime_21, NA)
+
+data_cabinets$etime_22 <- q_22 - data_cabinets$start_minister
+data_cabinets$etime_22 <- ifelse(data_cabinets$etime_22 > 0, data_cabinets$etime_22, NA)
+
+data_cabinets$etime_23 <- q_23 - data_cabinets$start_minister
+data_cabinets$etime_23 <- ifelse(data_cabinets$etime_23 > 0, data_cabinets$etime_23, NA)
+
+data_cabinets$etime_24 <- q_24 - data_cabinets$start_minister
+data_cabinets$etime_24 <- ifelse(data_cabinets$etime_24 > 0, data_cabinets$etime_24, NA)
+
+## Batch 07
+
+data_cabinets$etime_25 <- q_25 - data_cabinets$start_minister
+data_cabinets$etime_25 <- ifelse(data_cabinets$etime_25 > 0, data_cabinets$etime_25, NA)
+
+data_cabinets$etime_26 <- q_26 - data_cabinets$start_minister
+data_cabinets$etime_26 <- ifelse(data_cabinets$etime_26 > 0, data_cabinets$etime_26, NA)
+
+data_cabinets$etime_27 <- q_27 - data_cabinets$start_minister
+data_cabinets$etime_27 <- ifelse(data_cabinets$etime_27 > 0, data_cabinets$etime_27, NA)
+
+data_cabinets$etime_28 <- q_28 - data_cabinets$start_minister
+data_cabinets$etime_28 <- ifelse(data_cabinets$etime_28 > 0, data_cabinets$etime_28, NA)
+
+## Batch 08
+
+data_cabinets$etime_29 <- q_29 - data_cabinets$start_minister
+data_cabinets$etime_29 <- ifelse(data_cabinets$etime_29 > 0, data_cabinets$etime_29, NA)
+
+data_cabinets$etime_30 <- q_30 - data_cabinets$start_minister
+data_cabinets$etime_30 <- ifelse(data_cabinets$etime_30 > 0, data_cabinets$etime_30, NA)
+
+data_cabinets$etime_31 <- q_31 - data_cabinets$start_minister
+data_cabinets$etime_31 <- ifelse(data_cabinets$etime_31 > 0, data_cabinets$etime_31, NA)
+
+data_cabinets$etime_32 <- q_32 - data_cabinets$start_minister
+data_cabinets$etime_32 <- ifelse(data_cabinets$etime_32 > 0, data_cabinets$etime_32, NA)
+
+## Batch 09
+
+data_cabinets$etime_33 <- q_33 - data_cabinets$start_minister
+data_cabinets$etime_33 <- ifelse(data_cabinets$etime_33 > 0, data_cabinets$etime_33, NA)
+
+data_cabinets$etime_34 <- q_34 - data_cabinets$start_minister
+data_cabinets$etime_34 <- ifelse(data_cabinets$etime_34 > 0, data_cabinets$etime_34, NA)
+
+data_cabinets$etime_35 <- q_35 - data_cabinets$start_minister
+data_cabinets$etime_35 <- ifelse(data_cabinets$etime_35 > 0, data_cabinets$etime_35, NA)
+
+data_cabinets$etime_36 <- q_36 - data_cabinets$start_minister
+data_cabinets$etime_36 <- ifelse(data_cabinets$etime_36 > 0, data_cabinets$etime_36, NA)
+
+## Batch 10
+
+data_cabinets$etime_37 <- q_37 - data_cabinets$start_minister
+data_cabinets$etime_37 <- ifelse(data_cabinets$etime_37 > 0, data_cabinets$etime_37, NA)
+
+data_cabinets$etime_38 <- q_38 - data_cabinets$start_minister
+data_cabinets$etime_38 <- ifelse(data_cabinets$etime_38 > 0, data_cabinets$etime_38, NA)
+
+data_cabinets$etime_39 <- q_39 - data_cabinets$start_minister
+data_cabinets$etime_39 <- ifelse(data_cabinets$etime_39 > 0, data_cabinets$etime_39, NA)
+
+data_cabinets$etime_40 <- q_40 - data_cabinets$start_minister
+data_cabinets$etime_40 <- ifelse(data_cabinets$etime_40 > 0, data_cabinets$etime_40, NA)
+
+## Batch 11
+
+data_cabinets$etime_41 <- q_41 - data_cabinets$start_minister
+data_cabinets$etime_41 <- ifelse(data_cabinets$etime_41 > 0, data_cabinets$etime_41, NA)
+
+data_cabinets$etime_42 <- q_42 - data_cabinets$start_minister
+data_cabinets$etime_42 <- ifelse(data_cabinets$etime_42 > 0, data_cabinets$etime_42, NA)
+
+data_cabinets$etime_43 <- q_43 - data_cabinets$start_minister
+data_cabinets$etime_43 <- ifelse(data_cabinets$etime_43 > 0, data_cabinets$etime_43, NA)
+
+data_cabinets$etime_44 <- q_44 - data_cabinets$start_minister
+data_cabinets$etime_44 <- ifelse(data_cabinets$etime_44 > 0, data_cabinets$etime_44, NA)
+
+## Batch 12
+
+data_cabinets$etime_45 <- q_45 - data_cabinets$start_minister
+data_cabinets$etime_45 <- ifelse(data_cabinets$etime_45 > 0, data_cabinets$etime_45, NA)
+
+data_cabinets$etime_46 <- q_46 - data_cabinets$start_minister
+data_cabinets$etime_46 <- ifelse(data_cabinets$etime_46 > 0, data_cabinets$etime_46, NA)
+
+data_cabinets$etime_47 <- q_47 - data_cabinets$start_minister
+data_cabinets$etime_47 <- ifelse(data_cabinets$etime_47 > 0, data_cabinets$etime_47, NA)
+
+data_cabinets$etime_48 <- q_48 - data_cabinets$start_minister
+data_cabinets$etime_48 <- ifelse(data_cabinets$etime_48 > 0, data_cabinets$etime_48, NA)
+
+## Batch 13
+
+data_cabinets$etime_49 <- q_49 - data_cabinets$start_minister
+data_cabinets$etime_49 <- ifelse(data_cabinets$etime_49 > 0, data_cabinets$etime_49, NA)
+
+data_cabinets$etime_50 <- q_50 - data_cabinets$start_minister
+data_cabinets$etime_50 <- ifelse(data_cabinets$etime_50 > 0, data_cabinets$etime_50, NA)
+
+data_cabinets$etime_51 <- q_51 - data_cabinets$start_minister
+data_cabinets$etime_51 <- ifelse(data_cabinets$etime_51 > 0, data_cabinets$etime_51, NA)
+
+data_cabinets$etime_52 <- q_52 - data_cabinets$start_minister
+data_cabinets$etime_52 <- ifelse(data_cabinets$etime_52 > 0, data_cabinets$etime_52, NA)
+
+## Batch 14
+
+data_cabinets$etime_53 <- q_53 - data_cabinets$start_minister
+data_cabinets$etime_53 <- ifelse(data_cabinets$etime_53 > 0, data_cabinets$etime_53, NA)
+
+data_cabinets$etime_54 <- q_54 - data_cabinets$start_minister
+data_cabinets$etime_54 <- ifelse(data_cabinets$etime_54 > 0, data_cabinets$etime_54, NA)
+
+data_cabinets$etime_55 <- q_55 - data_cabinets$start_minister
+data_cabinets$etime_55 <- ifelse(data_cabinets$etime_55 > 0, data_cabinets$etime_55, NA)
+
+data_cabinets$etime_56 <- q_56 - data_cabinets$start_minister
+data_cabinets$etime_56 <- ifelse(data_cabinets$etime_56 > 0, data_cabinets$etime_56, NA)
+
+## Batch 15
+
+data_cabinets$etime_57 <- q_57 - data_cabinets$start_minister
+data_cabinets$etime_57 <- ifelse(data_cabinets$etime_57 > 0, data_cabinets$etime_57, NA)
+
+data_cabinets$etime_58 <- q_58 - data_cabinets$start_minister
+data_cabinets$etime_58 <- ifelse(data_cabinets$etime_58 > 0, data_cabinets$etime_58, NA)
+
+data_cabinets$etime_59 <- q_59 - data_cabinets$start_minister
+data_cabinets$etime_59 <- ifelse(data_cabinets$etime_59 > 0, data_cabinets$etime_59, NA)
+
+data_cabinets$etime_60 <- q_60 - data_cabinets$start_minister
+data_cabinets$etime_60 <- ifelse(data_cabinets$etime_60 > 0, data_cabinets$etime_60, NA)
+
+## Batch 16
+
+data_cabinets$etime_61 <- q_61 - data_cabinets$start_minister
+data_cabinets$etime_61 <- ifelse(data_cabinets$etime_61 > 0, data_cabinets$etime_61, NA)
+
+data_cabinets$etime_62 <- q_62 - data_cabinets$start_minister
+data_cabinets$etime_62 <- ifelse(data_cabinets$etime_62 > 0, data_cabinets$etime_62, NA)
+
+data_cabinets$etime_63 <- q_63 - data_cabinets$start_minister
+data_cabinets$etime_63 <- ifelse(data_cabinets$etime_63 > 0, data_cabinets$etime_63, NA)
+
+data_cabinets$etime_64 <- q_64 - data_cabinets$start_minister
+data_cabinets$etime_64 <- ifelse(data_cabinets$etime_64 > 0, data_cabinets$etime_64, NA)
+
+## Batch 17
+
+data_cabinets$etime_65 <- q_65 - data_cabinets$start_minister
+data_cabinets$etime_65 <- ifelse(data_cabinets$etime_65 > 0, data_cabinets$etime_65, NA)
+
+data_cabinets$etime_66 <- q_66 - data_cabinets$start_minister
+data_cabinets$etime_66 <- ifelse(data_cabinets$etime_66 > 0, data_cabinets$etime_66, NA)
+
+data_cabinets$etime_67 <- q_67 - data_cabinets$start_minister
+data_cabinets$etime_67 <- ifelse(data_cabinets$etime_67 > 0, data_cabinets$etime_67, NA)
+
+data_cabinets$etime_68 <- q_68 - data_cabinets$start_minister
+data_cabinets$etime_68 <- ifelse(data_cabinets$etime_68 > 0, data_cabinets$etime_68, NA)
+
+## Batch 18
+
+data_cabinets$etime_69 <- q_69 - data_cabinets$start_minister
+data_cabinets$etime_69 <- ifelse(data_cabinets$etime_69 > 0, data_cabinets$etime_69, NA)
+
+data_cabinets$etime_70 <- q_70 - data_cabinets$start_minister
+data_cabinets$etime_70 <- ifelse(data_cabinets$etime_70 > 0, data_cabinets$etime_70, NA)
+
+data_cabinets$etime_71 <- q_71 - data_cabinets$start_minister
+data_cabinets$etime_71 <- ifelse(data_cabinets$etime_71 > 0, data_cabinets$etime_71, NA)
+
+data_cabinets$etime_72 <- q_72 - data_cabinets$start_minister
+data_cabinets$etime_72 <- ifelse(data_cabinets$etime_72 > 0, data_cabinets$etime_72, NA)
+
+## Batch 19
+
+data_cabinets$etime_73 <- q_73 - data_cabinets$start_minister
+data_cabinets$etime_73 <- ifelse(data_cabinets$etime_73 > 0, data_cabinets$etime_73, NA)
+
+data_cabinets$etime_74 <- q_74 - data_cabinets$start_minister
+data_cabinets$etime_74 <- ifelse(data_cabinets$etime_74 > 0, data_cabinets$etime_74, NA)
+
+data_cabinets$etime_75 <- q_75 - data_cabinets$start_minister
+data_cabinets$etime_75 <- ifelse(data_cabinets$etime_75 > 0, data_cabinets$etime_75, NA)
+
+data_cabinets$etime_76 <- q_76 - data_cabinets$start_minister
+data_cabinets$etime_76 <- ifelse(data_cabinets$etime_76 > 0, data_cabinets$etime_76, NA)
+
+## Batch 20
+
+data_cabinets$etime_77 <- q_77 - data_cabinets$start_minister
+data_cabinets$etime_77 <- ifelse(data_cabinets$etime_77 > 0, data_cabinets$etime_77, NA)
+
+data_cabinets$etime_78 <- q_78 - data_cabinets$start_minister
+data_cabinets$etime_78 <- ifelse(data_cabinets$etime_78 > 0, data_cabinets$etime_78, NA)
+
+data_cabinets$etime_79 <- q_79 - data_cabinets$start_minister
+data_cabinets$etime_79 <- ifelse(data_cabinets$etime_79 > 0, data_cabinets$etime_79, NA)
+
+data_cabinets$etime_80 <- q_80 - data_cabinets$start_minister
+data_cabinets$etime_80 <- ifelse(data_cabinets$etime_80 > 0, data_cabinets$etime_80, NA)
+
+## Batch 21
+
+data_cabinets$etime_81 <- q_81 - data_cabinets$start_minister
+data_cabinets$etime_81 <- ifelse(data_cabinets$etime_81 > 0, data_cabinets$etime_81, NA)
+
+data_cabinets$etime_82 <- q_82 - data_cabinets$start_minister
+data_cabinets$etime_82 <- ifelse(data_cabinets$etime_82 > 0, data_cabinets$etime_82, NA)
+
+data_cabinets$etime_83 <- q_83 - data_cabinets$start_minister
+data_cabinets$etime_83 <- ifelse(data_cabinets$etime_83 > 0, data_cabinets$etime_83, NA)
+
+data_cabinets$etime_84 <- q_84 - data_cabinets$start_minister
+data_cabinets$etime_84 <- ifelse(data_cabinets$etime_84 > 0, data_cabinets$etime_84, NA)
+
+## Batch 22
+
+data_cabinets$etime_85 <- q_85 - data_cabinets$start_minister
+data_cabinets$etime_85 <- ifelse(data_cabinets$etime_85 > 0, data_cabinets$etime_85, NA)
+
+data_cabinets$etime_86 <- q_86 - data_cabinets$start_minister
+data_cabinets$etime_86 <- ifelse(data_cabinets$etime_86 > 0, data_cabinets$etime_86, NA)
+
+data_cabinets$etime_87 <- q_87 - data_cabinets$start_minister
+data_cabinets$etime_87 <- ifelse(data_cabinets$etime_87 > 0, data_cabinets$etime_87, NA)
+
+data_cabinets$etime_88 <- q_88 - data_cabinets$start_minister
+data_cabinets$etime_88 <- ifelse(data_cabinets$etime_88 > 0, data_cabinets$etime_88, NA)
+
+## Batch 23
+
+data_cabinets$etime_89 <- q_89 - data_cabinets$start_minister
+data_cabinets$etime_89 <- ifelse(data_cabinets$etime_89 > 0, data_cabinets$etime_89, NA)
+
+data_cabinets$etime_90 <- q_90 - data_cabinets$start_minister
+data_cabinets$etime_90 <- ifelse(data_cabinets$etime_90 > 0, data_cabinets$etime_90, NA)
+
+data_cabinets$etime_91 <- q_91 - data_cabinets$start_minister
+data_cabinets$etime_91 <- ifelse(data_cabinets$etime_91 > 0, data_cabinets$etime_91, NA)
+
+data_cabinets$etime_92 <- q_92 - data_cabinets$start_minister
+data_cabinets$etime_92 <- ifelse(data_cabinets$etime_92 > 0, data_cabinets$etime_92, NA)
+
+## Batch 24
+
+data_cabinets$etime_93 <- q_93 - data_cabinets$start_minister
+data_cabinets$etime_93 <- ifelse(data_cabinets$etime_93 > 0, data_cabinets$etime_93, NA)
+```
+
+---
+
+## Time-Dependent Data Set
+
+```{r, echo = TRUE, eval = FALSE}
+## Key Package
+library(survival)
+
+## Tmerge Function
+time_dep_data <- tmerge(data_cabinets[, 1:18], data_cabinets, id = id, 
+                        tstop = time_minister)
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_01))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_02))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_03))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_04))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_05))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_06))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_07))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_08))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_09))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_10))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_11))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_12))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_13))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_14))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_15))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_16))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_17))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_18))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_19))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_20))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_21))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_22))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_23))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_24))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_25))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_26))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_27))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_28))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_29))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_30))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_31))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_32))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_33))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_34))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_35))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_36))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_37))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_38))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_39))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_40))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_41))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_42))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_43))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_44))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_45))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_46))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_47))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_48))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_49))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_50))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_51))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_52))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_53))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_54))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_55))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_56))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_57))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_58))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_59))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_60))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_61))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_62))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_63))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_64))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_65))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_66))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_67))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_68))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_69))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_70))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_71))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_72))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_73))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_74))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_75))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_76))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_77))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_78))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_79))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_80))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_81))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_82))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_83))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_84))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_85))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_86))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_87))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_88))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_89))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_90))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_91))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_92))
+time_dep_data <- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_93))
+```
+
+---
+
+## Time-Varying Variables
+
+We merge in each interval $Z(t)$ quarterly smoothed presidential approval with <span style="color:orange">**`r Citet(bib, "Carlin2019")`**</span> data, <span style="color:orange">**`r Citet(bib, "WorldBank2020")`**</span> macroeconomic indicators and the legislative effective number of parties (ENP) with the <span style="color:orange">**`r Citet(bib, "Gallagher2005")`**</span> indicator updated. 
+
+The full code programmed to merge this time-varying variables is available in the RMarkdown R Demonstration.
+
+This allowed us to obtain a set of <span style="color:orange">**4,245 observations**</span> to which we applied administrative censoring in the final interval when it coincided with the end of the corresponding presidential term. 
+
+---
+
+class: chapter-slide
+
+# Results
+
+---
+
+## Exploratory Data Analysis
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(ggplot2)
+library(colorblindr)
+library(viridis)
+
+theme_useR <- function(base_size = 28) {
+  theme_bw(base_size = base_size) + 
+    theme(legend.margin = margin(), legend.title = element_blank())
+}
+```
+
+This chunk corresponds to the precoding stage, and the packages are necessary not only for EDA but also for time-varying exposure Cox regressions and propensity score and matching applications.
+
+```{r, echo = TRUE, eval = TRUE, warning = FALSE, message = FALSE}
+## Packages
+library(tidyverse)
+library(survival)
+library(survminer)
+library(stargazer)
+library(MatchIt)
+library(cobalt)
+library(fmsb)
+library(sjPlot)
+
+## Time-Dependent Data Set
+time_dep_data  <- read.csv("../data/tidy/time_dependent_Brazil_Chile.csv", sep = ",", 
+                           encoding = "UTF-8")
+
+## EAD 2.0
+ead_set <- read.csv("../data/raw/EAD/EAD+2.0+quarter+101019.csv", sep = ",", 
+                    encoding = "UTF-8")
+ead_set <- filter(ead_set, ccode == "Brazil" | ccode == "Chile")
+```
+
+---
+
+## LOESS of Presidential Approval
+
+.pull-left[
+```{r, echo = TRUE, eval = FALSE, warning = FALSE, message = FALSE}
+ggplot(subset(ead_set, year > 1989 & year < 2015), 
+       aes(x = year, y = Approval_Smoothed, col = ccode)) + 
+  geom_smooth(aes(linetype = ccode, fill = ccode)) +
+  geom_hline(yintercept = 40, col = "black", lty = 2) +
+  theme_useR(base_size = 18) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1, color = "black",  
+                                   size = 9)) +
+  labs(x = "Year", y = "Presidential Approval", title = NULL, subtitle = NULL) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = viridis(2, direction = -1, option = "viridis")) +
+  scale_fill_manual(values = viridis(2, alpha = 0.8, direction = -1, 
+                                     option = "viridis")) +
+  scale_linetype_manual(values = c(1, 3)) 
+```
+]
+
+.pull-right[
+```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+ggplot(subset(ead_set, year > 1989 & year < 2015), 
+       aes(x = year, y = Approval_Smoothed, col = ccode)) + 
+  geom_smooth(aes(linetype = ccode, fill = ccode)) +
+  geom_hline(yintercept = 40, col = "black", lty = 2) +
+  theme_useR(base_size = 18) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1, color = "black",  
+                                   size = 9)) +
+  labs(x = "Year", y = "Presidential Approval", title = NULL, subtitle = NULL) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = viridis(2, direction = -1, option = "viridis")) +
+  scale_fill_manual(values = viridis(2, alpha = 0.8, direction = -1, 
+                                     option = "viridis")) +
+  scale_linetype_manual(values = c(1, 3)) 
+```
+]
+
+---
+
+## Kaplan-Meier Estimations for Ministers
+
+.pull-left[
+```{r, echo = TRUE, eval = FALSE, message = FALSE}
+time_dep_data$country <- as.factor(time_dep_data$country)
+time_dep_data$fail <- ifelse((time_dep_data$remain == 0 
+                              & time_dep_data$adm_cens != 1), 1, 0)
+fit.country <- survfit(Surv(tstart, tstop, fail == 1) ~ I(country) 
+                       + cluster(id), data = time_dep_data)
+ggsurvplot(fit.country, data = time_dep_data, title = NULL, conf.int = TRUE, 
+           conf.int.style = "step",
+           censor = FALSE, legend = "bottom", pval = FALSE, pval.method = TRUE,
+           surv.median.line = "hv", palette = viridis(2, direction = -1, 
+                                                      option = "viridis"), 
+           ggtheme = theme_useR(base_size = 18),
+           legend.title = "", legend.labs = c("Brazil", "Chile"),
+           risk.table = FALSE, cumevents = FALSE, tables.height = 0.15,
+           tables.theme = theme_cleantable(),
+           tables.y.text = FALSE, 
+           xlab = "Time in Days", break.time.by = 365,
+           ylab = "Probability of Survival in the Cabinet")
+```
+]
+
+.pull-right[
+```{r, echo = FALSE, eval = TRUE, message = FALSE, fig.alt = "Nonparametric Kaplan-Meier estimation based on individual ministerial terminations"}
+time_dep_data$country <- as.factor(time_dep_data$country)
+time_dep_data$fail <- ifelse((time_dep_data$remain == 0 
+                              & time_dep_data$adm_cens != 1), 1, 0)
+fit.country <- survfit(Surv(tstart, tstop, fail == 1) ~ I(country) 
+                       + cluster(id), data = time_dep_data)
+ggsurvplot(fit.country, data = time_dep_data, title = NULL, conf.int = TRUE, 
+           conf.int.style = "step",
+           censor = FALSE, legend = "bottom", pval = FALSE, pval.method = TRUE,
+           surv.median.line = "hv", palette = viridis(2, direction = -1, 
+                                                      option = "viridis"), 
+           ggtheme = theme_useR(base_size = 18),
+           legend.title = "", legend.labs = c("Brazil", "Chile"),
+           risk.table = FALSE, cumevents = FALSE, tables.height = 0.15,
+           tables.theme = theme_cleantable(),
+           tables.y.text = FALSE, 
+           xlab = "Time in Days", break.time.by = 365,
+           ylab = "Probability of Survival in the Cabinet")
+```
+]
+
+---
+
+class: chapter-slide
+
+# Causal Identification Strategy
+
+---
+
+## Time-Varying Exposure Cox Regressions
+
+Our baseline model does not include any covariates or specifications. 
+
+We then extended the equation incorporating moderating covariates $X_{j[i]}$, controlling for government and country fixed effects, including a vector of controls $C_k$ with _k-th_ potential confounders that are subsequently used to estimate the propensity score, and clustering observations.
+
+Next, we incorporated the interaction effect between low presidential approval $D_{i}$ and our covariates $X_{j[i]}$, denoting _j-th_ type covariates that are incorporated in separate models with the term $\delta_{j} D_{i} \times X_{j[i]}$.
+
+---
+
+## Propensity Score Analysis, Matching and Moderation Analysis
+
+To control for the non-random selection problem in our observational data, we next employed <span style="color:orange">**propensity score analysis and matching techniques**</span> to correct for imbalances and control for bias. 
+
+We estimated the propensity score by performing a probit regression of periods of low presidential approval $D_{i}$ with the moderating covariates $X_{j[i]}$, government and country fixed effects and the potential confounders that make up the vector $C_{k}$.
+
+We then classified _i-th_ observations into different propensity score balanced groups with different algorithms <span style="color:orange">**`r Citep(bib, "Austin2015")`**</span>.
+
+---
+
+## Love Plot
+
+```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#### Precoding PSA and Matching ####
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Time Dependent Data
+time_dep_data <- na.omit(time_dep_data)
+time_dep_data$low_approval <- ifelse(time_dep_data$Approval_Smoothed < 40, 1, 0)
+time_dep_data$very_low_approval <- ifelse(time_dep_data$Approval_Smoothed < 30, 1, 0)
+time_dep_data$reelection <- ifelse((time_dep_data$president == "Fernando Henrique I" 
+                                    | time_dep_data$president == "Lula da Silva I"), 1, 0)
+
+time_dep_data$honeymoon_1q <- ifelse(((time_dep_data$president == "Patricio Aylwin" & time_dep_data$year == 1990 & time_dep_data$quarter == 2)
+                                      | (time_dep_data$president == "Eduardo Frei" & time_dep_data$year == 1994 & time_dep_data$quarter == 1)
+                                      | (time_dep_data$president == "Ricardo Lagos" & time_dep_data$year == 2000 & time_dep_data$quarter == 1)
+                                      | (time_dep_data$president == "Michelle Bachelet" & time_dep_data$year == 2006 & time_dep_data$quarter == 1)
+                                      | (time_dep_data$president == "Sebastián Piñera" & time_dep_data$year == 2010 & time_dep_data$quarter == 1)
+                                      | (time_dep_data$president == "Fernando Henrique I" & time_dep_data$year == 1995 & time_dep_data$quarter == 1)
+                                      | (time_dep_data$president == "Fernando Henrique II" & time_dep_data$year == 1999 & time_dep_data$quarter == 1)
+                                      | (time_dep_data$president == "Lula da Silva I" & time_dep_data$year == 2003 & time_dep_data$quarter == 1)
+                                      | (time_dep_data$president == "Lula da Silva II" & time_dep_data$year == 2007 & time_dep_data$quarter == 1)),
+                                     1, 0)
+
+time_dep_data$honeymoon_2q <- ifelse(((time_dep_data$president == "Patricio Aylwin" & time_dep_data$year == 1990 & time_dep_data$quarter == 3)
+                                      | (time_dep_data$president == "Eduardo Frei" & time_dep_data$year == 1994 & time_dep_data$quarter == 2)
+                                      | (time_dep_data$president == "Ricardo Lagos" & time_dep_data$year == 2000 & time_dep_data$quarter == 2)
+                                      | (time_dep_data$president == "Michelle Bachelet" & time_dep_data$year == 2006 & time_dep_data$quarter == 2)
+                                      | (time_dep_data$president == "Sebastián Piñera" & time_dep_data$year == 2010 & time_dep_data$quarter == 2)
+                                      | (time_dep_data$president == "Fernando Henrique I" & time_dep_data$year == 1995 & time_dep_data$quarter == 2)
+                                      | (time_dep_data$president == "Fernando Henrique II" & time_dep_data$year == 1999 & time_dep_data$quarter == 2)
+                                      | (time_dep_data$president == "Lula da Silva I" & time_dep_data$year == 2003 & time_dep_data$quarter == 2)
+                                      | (time_dep_data$president == "Lula da Silva II" & time_dep_data$year == 2007 & time_dep_data$quarter == 2)),
+                                     1, 0)
+
+time_dep_data$honeymoon_3q <- ifelse(((time_dep_data$president == "Patricio Aylwin" & time_dep_data$year == 1990 & time_dep_data$quarter == 4)
+                                         | (time_dep_data$president == "Eduardo Frei" & time_dep_data$year == 1994 & time_dep_data$quarter == 3)
+                                         | (time_dep_data$president == "Ricardo Lagos" & time_dep_data$year == 2000 & time_dep_data$quarter == 3)
+                                         | (time_dep_data$president == "Michelle Bachelet" & time_dep_data$year == 2006 & time_dep_data$quarter == 3)
+                                         | (time_dep_data$president == "Sebastián Piñera" & time_dep_data$year == 2010 & time_dep_data$quarter == 3)
+                                         | (time_dep_data$president == "Fernando Henrique I" & time_dep_data$year == 1995 & time_dep_data$quarter == 3)
+                                         | (time_dep_data$president == "Fernando Henrique II" & time_dep_data$year == 1999 & time_dep_data$quarter == 3)
+                                         | (time_dep_data$president == "Lula da Silva I" & time_dep_data$year == 2003 & time_dep_data$quarter == 3)
+                                         | (time_dep_data$president == "Lula da Silva II" & time_dep_data$year == 2007 & time_dep_data$quarter == 3)),
+                                         1, 0 )
+
+time_dep_data$preelection_1q <- ifelse(((time_dep_data$president == "Patricio Aylwin" & time_dep_data$year == 1993 & time_dep_data$quarter == 4)
+                                        | (time_dep_data$president == "Eduardo Frei" & time_dep_data$year == 1999 & time_dep_data$quarter == 4)
+                                        | (time_dep_data$president == "Ricardo Lagos" & time_dep_data$year == 2005 & time_dep_data$quarter == 4)
+                                        | (time_dep_data$president == "Michelle Bachelet" & time_dep_data$year == 2009 & time_dep_data$quarter == 4)
+                                        | (time_dep_data$president == "Sebastián Piñera" & time_dep_data$year == 2013 & time_dep_data$quarter == 4)
+                                        | (time_dep_data$president == "Fernando Henrique I" & time_dep_data$year == 1998 & time_dep_data$quarter == 4)| (time_dep_data$president == "Fernando Henrique II" & time_dep_data$year == 2002 & time_dep_data$quarter == 4)
+                                        | (time_dep_data$president == "Lula da Silva I" & time_dep_data$year == 2006 & time_dep_data$quarter == 4)
+                                        | (time_dep_data$president == "Lula da Silva II" & time_dep_data$year == 2010 & time_dep_data$quarter == 4)),
+                                       1, 0)
+
+time_dep_data$preelection_2q <- ifelse(((time_dep_data$president == "Patricio Aylwin" & time_dep_data$year == 1993 & time_dep_data$quarter == 3)
+                                        | (time_dep_data$president == "Eduardo Frei" & time_dep_data$year == 1999 & time_dep_data$quarter == 3)
+                                        | (time_dep_data$president == "Ricardo Lagos" & time_dep_data$year == 2005 & time_dep_data$quarter == 3)
+                                        | (time_dep_data$president == "Michelle Bachelet" & time_dep_data$year == 2009 & time_dep_data$quarter == 3)
+                                        | (time_dep_data$president == "Sebastián Piñera" & time_dep_data$year == 2013 & time_dep_data$quarter == 3)
+                                        | (time_dep_data$president == "Fernando Henrique I" & time_dep_data$year == 1998 & time_dep_data$quarter == 3)
+                                        | (time_dep_data$president == "Fernando Henrique II" & time_dep_data$year == 2002 & time_dep_data$quarter == 3)
+                                        | (time_dep_data$president == "Lula da Silva I" & time_dep_data$year == 2006 & time_dep_data$quarter == 3)
+                                        | (time_dep_data$president == "Lula da Silva II" & time_dep_data$year == 2010 & time_dep_data$quarter == 3)),
+                                       1, 0)
+
+## Gallagher and Mitchell (2005)'s ENP
+time_dep_data$eff_par <- ifelse(time_dep_data$president == "Fernando Henrique I", 8.16,
+                                ifelse(time_dep_data$president == "Fernando Henrique II", 7.14,
+                                       ifelse(time_dep_data$president == "Lula da Silva I", 8.47,
+                                              ifelse(time_dep_data$president == "Lula da Silva II", 9.32,
+                                                     ifelse(time_dep_data$president == "Patricio Aylwin", 2.04,
+                                                            ifelse((time_dep_data$president == "Eduardo Frei" & time_dep_data$year < 1998), 1.95,
+                                                                   ifelse((time_dep_data$president == "Eduardo Frei" & time_dep_data$year > 1997), 2.07,
+                                                                          ifelse((time_dep_data$president == "Ricardo Lagos" & time_dep_data$year < 2002), 2.07,
+                                                                                 ifelse((time_dep_data$president == "Ricardo Lagos" & time_dep_data$year > 2001), 2.03,
+                                                                                        ifelse(time_dep_data$president == "Michelle Bachelet", 2.02,
+                                                                                               ifelse(time_dep_data$president == "Sebastián Piñera", 2.17, NA)))))))))))
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#### PSA and Matching ####
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Propensity Score, Matching and Moderation Analysis
+
+m_out_0 <- matchit(low_approval ~ non_party + economist + party_leader + eff_par + reelection + gdp + inflation 
+                   + honeymoon_1q + honeymoon_2q + honeymoon_3q + preelection_1q + preelection_2q + I(president) 
+                   + I(country) + cluster(id), data = time_dep_data, method = NULL, distance = "glm")
+
+m_out_1 <- matchit(low_approval ~ non_party + economist + party_leader + eff_par + reelection + gdp + inflation 
+                   + honeymoon_1q + honeymoon_2q + honeymoon_3q + preelection_1q + preelection_2q + I(president) 
+                   + I(country) + cluster(id), data = time_dep_data, method = "nearest", distance = "glm", 
+                   link = "probit", replace = FALSE, exact = ~ non_party + economist + party_leader)
+
+m_out_2 <- matchit(low_approval ~ non_party + economist + party_leader + eff_par + reelection + gdp + inflation 
+                   + honeymoon_1q + honeymoon_2q + honeymoon_3q + preelection_1q + preelection_2q + I(president) 
+                   + I(country) + cluster(id), data = time_dep_data, method = "full", distance = "glm", 
+                   link = "probit", exact = ~ non_party + economist + party_leader)
+
+## Labels
+loveplot_var <- c(gdp = "GDP growth", 
+                  "I(president)_Fernando Henrique II" = "Fernando Henrique 2nd Gov", 
+                  inflation = "Inflation", 
+                  "cluster(id)" = "Time-Dependent Cluster", 
+                  eff_par = "Legislative ENP",
+                  non_party = "Nonpartisan",
+                  "I(president)_Sebastián Piñera" = "Sebastián Piñera 1st Gov", 
+                  "I(country)_Chile" = "Country Dummy: Chile", 
+                  "I(president)_Lula da Silva II" = "Lula da Silva 2nd Gov", 
+                  "I(president)_Ricardo Lagos" = "Ricardo Lagos Gov", 
+                  "I(president)_Patricio Aylwin" = "Patricio Aylwin Gov", 
+                  "I(president)_Michelle Bachelet" = "Michelle Bachelet 1st Gov", 
+                  "I(president)_Eduardo Frei" = "Eduardo Frei Gov", 
+                  economist = "Economist", 
+                  party_leader = "Party Leader", 
+                  preelection_1q = "1st Quarter Pre-Election", 
+                  "I(president)_Lula da Silva I" = "Lula da Silva 1st Gov", 
+                  honeymoon_2q = "Honeymoon 2nd Quarter", 
+                  honeymoon_1q = "Honeymoon 1st Quarter", 
+                  honeymoon_3q = "Honeymoon 3rd Quarter", 
+                  reelection = "Reelection Allowed", 
+                  preelection_2q = "2nd Quarter Pre-Election", 
+                  "I(president)_Fernando Henrique I" = "Fernando Henrique 1st Gov"
+                  )
+```
+
+.pull-left[
+```{r, echo = TRUE, eval = FALSE, warning = FALSE, message = FALSE}
+love.plot(m_out_1, stat = "mean.diffs", poly = 1, abs = TRUE,
+          weights = list(m_out_2),
+          drop.distance = TRUE, thresholds = c(m = .1), 
+          var.order = "unadjusted",
+          shapes = c("square", "circle", "triangle"),
+          colors = viridis(3, direction = -1, option = "viridis"),
+          var.names = loveplot_var,
+          sample.names = c("Unmatched", "NN Matching", "Full Matching"),
+          line = FALSE, stars = "none", title = NULL) + 
+  theme_useR(base_size = 18) +
+  theme(legend.title = element_blank()) 
+```
+]
+
+.pull-right[
+```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+love.plot(m_out_1, stat = "mean.diffs", poly = 1, abs = TRUE,
+          weights = list(m_out_2),
+          drop.distance = TRUE, thresholds = c(m = .1), 
+          var.order = "unadjusted",
+          shapes = c("square", "circle", "triangle"),
+          colors = viridis(3, direction = -1, option = "viridis"),
+          var.names = loveplot_var,
+          sample.names = c("Unmatched", "NN Matching", "Full Matching"),
+          line = FALSE, stars = "none", title = NULL) + 
+  theme_useR(base_size = 18) +
+  theme(legend.title = element_blank()) 
+```
+]
+
+---
+
+## Outcome Models
+
+Only legislative ENP and inflation fail to balance with full matching. Consequently, we integrated these variables as controls in the outcome models <span style="color:orange">**`r Citep(bib, "Austin2007")`**</span>. 
+
+In addition, we incorporated the weights obtained with the matching process and adjusted for the $s$-$th$ clusters of the matching to test the effect of exposure to low presidential approval on individual ministerial terminations <span style="color:orange">**`r Citep(bib, "Ho2011")`**</span>.
+
+
+Then, we included interaction terms between low approval $D_i$ and our moderation factors $X_{j[i]}$, using $\delta_j w_i D_i \times X_{j[i]}$ in separate models to perform the moderation analysis. 
+
+Finally, we fitted a number of placebo and robustness checks.
+
+---
+
+## Predicted Risk
+
+```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+## Precoding
+matching_data <- match.data(m_out_2)
+labelled_data <- matching_data
+labelled_data$low_approval <- ifelse(labelled_data$low_approval == 1, "Low Approval (< 40%)", "Over 40% Approval")
+labelled_data$low_approval <- factor(labelled_data$low_approval, levels = c("Over 40% Approval", "Low Approval (< 40%)"))
+labelled_data$non_party <- ifelse(labelled_data$non_party == 1, "Nonpartisan", "Party Member")
+labelled_data$non_party <- factor(labelled_data$non_party, levels = c("Party Member", "Nonpartisan"))
+
+labelled_model_1 <- coxph(Surv(tstart, tstop, fail == 1) ~ non_party * low_approval + eff_par + inflation, 
+                          robust = TRUE, data = labelled_data, weights = weights, cluster = subclass)
+```
+
+.pull-left[
+```{r, echo = TRUE, eval = FALSE, warning = FALSE, message = FALSE}
+plot_model(labelled_model_1 , type = "int", mdrt.values = "minmax", 
+           ci.lvl = 0.95, colors = viridis(2, direction = -1, 
+                                           option = "viridis")) +
+  theme_useR(base_size = 18) +
+  labs(x = "\nPresidential Approval", y = "Predicted Risk", caption = "") +
+  ggtitle("") + theme(axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold"),
+        legend.title = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA, size = 0.7),
+        panel.background = element_blank(),
+        axis.line = element_blank()) 
+```
+]
+
+.pull-left[
+```{r, echo = FALSE, eval = TRUE, warning = FALSE, message = FALSE}
+plot_model(labelled_model_1 , type = "int", mdrt.values = "minmax", 
+           ci.lvl = 0.95, colors = viridis(2, direction = -1, 
+                                           option = "viridis")) +
+  theme_useR(base_size = 18) +
+  labs(x = "\nPresidential Approval", y = "Predicted Risk", caption = "") +
+  ggtitle("") + theme(axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold"),
+        legend.title = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA, size = 0.7),
+        panel.background = element_blank(),
+        axis.line = element_blank()) 
+```
+]
+
+---
+
+# Useful Information
+
+- You can email me at [bastian.gonzalezbustamante@politics.ox.ac.uk](mailto:bastian.gonzalezbustamante@politics.ox.ac.uk)
+
+- Or check my website [bgonzalezbustamante.com](https://bgonzalezbustamante.com/)
+
+- This [OSF view-only link](https://osf.io/asgbj/?view_only=144acd6c8eca4836880b57dee85ea4ff) offers access to the private project in progress, which contains the R demonstration in Markdown and an **early preprint** of the work more focused on the phenomenon than on methodological applications.
+
+- The OSF project is connected with the private (for now) repository _time-dep-cabinet-data_ on GitHub, which hosts the complete R code with version control and metadata.
+
+- This is the permalink to the latest version of this presentation
+
+---
+
+# References
+
+```{r, results='asis', echo=FALSE}
+PrintBibliography(bib)
+```
