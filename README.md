@@ -10,11 +10,15 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ### 2022
 
-- González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Local Governments*. [In English] **[To Be Confirmed]**.
+- González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Local Governments*. Presentation delivered at the International Political Science Association Seminar Smart Cities and Open Government: Local Responses to Participation, Public Information, and Democracy, Madrid. [In English]
 
-- González-Bustamante, B. (2022). *Quantitative Methods for Studying Elites: Practical Applications, Biases and Potential.* [In Spanish] **[To Be Confirmed]**.
+- González-Bustamante, B. (2022). *Quantitative Methods for Studying Elites: Practical Applications, Biases and Potential.* Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish]
 
 - González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Municipalities*. Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish]
+
+- González-Bustamante, B. (2022). *Ministerial Stability During Presidential Approval Crises: Evidence from Brazil and Chile*. Presentation delivered at the Political Studies Association Early Career Network Annual Conference, Sheffield, UK. [In English]
+
+- González-Bustamante, B. (2022). *Time-Dependent Data Encoding and Time-Varying Exposure Survival Models to Study Presidential Crises*. Presentation delivered at the R User Annual Conference, Virtual. [In English] **[[Permalink]](https://bgonzalezbustamante.github.io/Public-Presentations/2022/bgonzalezbustamante_user_R_2022)**.
 
 - González-Bustamante, B. (2022). *Resignation Calls and Dismissals of Ministers in Latin America: Data Gathering using NLP and Machine Learning*. Presentation delivered at the XXXIX International Congress of the Latin American Studies Association, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LASA-RC-2022.pdf)**.
 
