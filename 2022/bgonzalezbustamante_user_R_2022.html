@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Time-dependent data encoding and time-varying exposure survival models to study presidential crises</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Bastián González-Bustamante" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/useR.css" rel="stylesheet" />
+    <link href="libs/remark-css/useR-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Time-dependent data encoding and time-varying exposure survival models to study presidential crises
+]
+.author[
+### Bastián González-Bustamante
+]
+.date[
+### June 2022
+]
+
+---
+
+
+class: chapter-slide
+
+# Motivation
+
+&lt;style type="text/css"&gt;
+.remark-slide-scaler {
+    overflow-y: auto;
+}
+&lt;/style&gt;
+
+---
+
+## Motivation
+
+
+
+Our main question is: How can a minister's attributes prevent his exit from the cabinet during periods of low presidential approval? 
+
+This presentations focuses on the specific procedure for correctly estimating effects and bias using the survival approach, which constitutes a substantial, novel methodological contribution. &lt;span style="color:orange"&gt;**We will pay special attention to the encoding of the data technique**&lt;/span&gt;.
+
+This contribution is relevant since straightforward modelling of the relationship between low approval and cabinet turnover may be biased and exposed to endogeneity because presidents or prime ministers tend to reshuffle their cabinets at times of low popularity &lt;span style="color:orange"&gt;**(Martinez-Gallardo, 2014)**&lt;/span&gt;
+
+---
+
+class: chapter-slide
+
+# Methods and Data
+
+---
+
+## Data
+
+First, we merged the data sets of &lt;span style="color:orange"&gt;**Franz and Codato (2016)**&lt;/span&gt; and &lt;span style="color:orange"&gt;**González-Bustamante and Olivares (2022)**&lt;/span&gt; about ministers in Brazil and Chile between 1990 and 2014. 
+
+Both sets contain information about the ministers' attributes and trajectories and the exact dates on which they became and ceased to be ministers, which are particularly important for our empirical strategy. 
+
+We thereby obtained a set of &lt;span style="color:orange"&gt;**488 observations**&lt;/span&gt; that we coded as a time-dependent data set with quarterly cut-off points for the whole period in order to incorporate presidential approval and macroeconomic data as time-varying covariates.
+
+---
+
+## Data Cleaning Brazil
+
+
+```r
+## Data Brazil
+data_BRA &lt;- read.csv("data/raw/cabinets_Brazil/BD_ministros_FHC_Lula.csv", sep = ",", 
+                     encoding = "UTF-8")
+data_BRA &lt;- select(data_BRA, 1, 3, 5, 9:10, 12, 19:21, 23, 24, 104, 106, 109, 40)
+names(data_BRA)[1] = "id"
+names(data_BRA)[2] = "name"
+data_BRA$age &lt;- trunc(as.numeric((as.Date.character(data_BRA$entrada_pasta, 
+                                                    format = "%d/%m/%Y") - 
+  as.Date.character(data_BRA$data_nascimento, format = "%d/%m/%Y")) / 365))
+data_BRA$data_nascimento &lt;- NULL
+names(data_BRA)[3] = "sex"
+data_BRA$sex &lt;- ifelse(data_BRA$sex == "masculino", "man", "woman")
+data_BRA$economist &lt;- ifelse(data_BRA$ocupacao_profissional_resumida == "economista", 
+                             1, 0)
+data_BRA$lawyer &lt;- ifelse(data_BRA$ocupacao_profissional_resumida == "advogado", 1, 0)
+data_BRA$ocupacao_profissional_resumida &lt;- NULL
+names(data_BRA)[4] = "ministry"
+names(data_BRA)[5] = "president"
+names(data_BRA)[6] = "start_president"
+data_BRA$start_president &lt;- as.Date.character(data_BRA$start_president, 
+                                              format = "%d/%m/%Y")
+names(data_BRA)[7] = "end_president"
+data_BRA$end_president &lt;- as.Date.character(data_BRA$end_president, 
+                                            format = "%d/%m/%Y")
+names(data_BRA)[8] = "start_minister"
+data_BRA$start_minister &lt;- as.Date.character(data_BRA$start_minister, 
+                                             format = "%d/%m/%Y")
+names(data_BRA)[9] = "end_minister"
+data_BRA$end_minister &lt;- as.Date.character(data_BRA$end_minister, 
+                                           format = "%d/%m/%Y")
+names(data_BRA)[10] = "president_party" 
+data_BRA$president_party &lt;- ifelse(data_BRA$president_party == "sim", 1, 0)
+data_BRA$non_party &lt;- ifelse(data_BRA$partido_momento_nomeacao == "sem partido", 1, 0)
+data_BRA$partido_momento_nomeacao &lt;- NULL
+names(data_BRA)[11] = "party_leader" 
+data_BRA$party_leader &lt;- ifelse(data_BRA$party_leader == "sim", 1, 0)
+data_BRA$country &lt;- "Brazil"
+data_BRA$phd &lt;- ifelse(data_BRA$titulacao_pos == "doutor", 1, 0)
+data_BRA$titulacao_pos &lt;- NULL
+data_BRA &lt;- data_BRA[, c(1, 16, 2, 3, 12, 5:7, 4, 8, 9, 15, 11, 10, 13, 14, 17)]
+```
+
+---
+
+## Data Cleaning Chile
+
+
+```r
+## GitHub Repository
+github_1 &lt;- "https://raw.githubusercontent.com/"
+github_2 &lt;- "bgonzalezbustamante/chilean-ministers/main/data/tidy/"
+
+## Chilean Ministers Data
+chilean_ministers &lt;- read.csv(paste(github_1, github_2, "Chilean_cabinets_1990_2014.csv", 
+                                    sep = ""), header = T, sep = ",", encoding = "UTF-8")
+
+data_CHL &lt;- chilean_ministers
+data_CHL &lt;- select(data_CHL, 1:12, 17, 13:15)
+data_CHL$start_president &lt;- as.Date(data_CHL$start_president)
+data_CHL$end_president &lt;- as.Date(data_CHL$end_president)
+data_CHL$start_minister &lt;- as.Date(data_CHL$start_minister)
+data_CHL$end_minister &lt;- as.Date(data_CHL$end_minister)
+
+## PhD Chilean cases
+data_CHL$phd &lt;- c(0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0,
+                  0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1,
+                  1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0,
+                  0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0,
+                  0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 
+                  0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0,
+                  0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0,
+                  0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1)
+```
+
+---
+
+## Merging Data Sets
+
+
+```r
+## Merge Data Sets
+data_BRA$id &lt;- NULL
+data_CHL$id &lt;- NULL
+data_cabinets &lt;- add_row(data_BRA, data_CHL)
+data_cabinets &lt;- cbind(id = rownames(data_cabinets), data_cabinets)
+data_cabinets$time_minister &lt;- data_cabinets$end_minister - data_cabinets$start_minister
+
+## Save Clean Data
+write.csv(data_cabinets, "data/tidy/cabinets_Brazil_Chile.csv", fileEncoding = "UTF-8", 
+          row.names =  FALSE)
+```
+
+Then, we used the time-interval model of &lt;span style="color:orange"&gt;**Therneau, Crowson, and Atkinson (2020)**&lt;/span&gt; in which the base is encoded with cases that have multiple observations (_i-th_ ministers) to defined time intervals corresponding to the four quarters of each year: `\(q_1\)`, `\(q_2\)`, `\(q_3\)` and `\(q_4\)`.
+
+---
+
+## Time-Dependent Data Encoding
+
+We generated a time event _T_ considering each interval `\(q_j\)` and taking into account the individual ministerial terminations `\(Y_i\)` by constructing intervals where `\(Z(t) = I(t &gt; Y_i)\)`.
+
+.pull-left[
+
+```r
+## Quarters Points
+q_01 &lt;- as.Date("1990-04-01") - 1
+q_02 &lt;- as.Date("1990-07-01") - 1
+q_03 &lt;- as.Date("1990-10-01") - 1
+q_04 &lt;- as.Date("1991-01-01") - 1
+q_05 &lt;- as.Date("1991-04-01") - 1 
+q_06 &lt;- as.Date("1991-07-01") - 1
+q_07 &lt;- as.Date("1991-10-01") - 1
+q_08 &lt;- as.Date("1992-01-01") - 1
+q_09 &lt;- as.Date("1992-04-01") - 1
+q_10 &lt;- as.Date("1992-07-01") - 1
+q_11 &lt;- as.Date("1992-10-01") - 1
+q_12 &lt;- as.Date("1993-01-01") - 1
+q_13 &lt;- as.Date("1993-04-01") - 1
+q_14 &lt;- as.Date("1993-07-01") - 1
+q_15 &lt;- as.Date("1993-10-01") - 1
+q_16 &lt;- as.Date("1994-01-01") - 1
+q_17 &lt;- as.Date("1994-04-01") - 1
+q_18 &lt;- as.Date("1994-07-01") - 1
+q_19 &lt;- as.Date("1994-10-01") - 1
+q_20 &lt;- as.Date("1995-01-01") - 1
+q_21 &lt;- as.Date("1996-04-01") - 1
+q_22 &lt;- as.Date("1996-07-01") - 1
+q_23 &lt;- as.Date("1996-10-01") - 1
+q_24 &lt;- as.Date("1997-01-01") - 1
+q_25 &lt;- as.Date("1997-04-01") - 1
+q_26 &lt;- as.Date("1997-07-01") - 1
+q_27 &lt;- as.Date("1997-10-01") - 1
+q_28 &lt;- as.Date("1998-01-01") - 1
+q_29 &lt;- as.Date("1998-04-01") - 1
+q_30 &lt;- as.Date("1998-07-01") - 1
+q_31 &lt;- as.Date("1998-10-01") - 1
+q_32 &lt;- as.Date("1999-01-01") - 1
+q_33 &lt;- as.Date("1999-04-01") - 1
+q_34 &lt;- as.Date("1999-07-01") - 1
+q_35 &lt;- as.Date("1999-10-01") - 1
+q_36 &lt;- as.Date("2000-01-01") - 1
+q_37 &lt;- as.Date("2000-04-01") - 1
+q_38 &lt;- as.Date("2000-07-01") - 1
+q_39 &lt;- as.Date("2000-10-01") - 1
+q_40 &lt;- as.Date("2001-01-01") - 1
+q_41 &lt;- as.Date("2001-04-01") - 1
+q_42 &lt;- as.Date("2001-07-01") - 1
+q_43 &lt;- as.Date("2001-10-01") - 1
+q_44 &lt;- as.Date("2002-01-01") - 1
+q_45 &lt;- as.Date("2002-04-01") - 1
+q_46 &lt;- as.Date("2002-07-01") - 1
+q_47 &lt;- as.Date("2002-10-01") - 1
+```
+]
+
+.pull-right[
+
+```r
+## Quarters Points
+q_48 &lt;- as.Date("2003-01-01") - 1
+q_49 &lt;- as.Date("2003-04-01") - 1
+q_50 &lt;- as.Date("2003-07-01") - 1
+q_51 &lt;- as.Date("2003-10-01") - 1
+q_52 &lt;- as.Date("2004-01-01") - 1
+q_53 &lt;- as.Date("2004-04-01") - 1
+q_54 &lt;- as.Date("2004-07-01") - 1
+q_55 &lt;- as.Date("2004-10-01") - 1
+q_56 &lt;- as.Date("2005-01-01") - 1
+q_57 &lt;- as.Date("2005-04-01") - 1
+q_58 &lt;- as.Date("2005-07-01") - 1
+q_59 &lt;- as.Date("2005-10-01") - 1
+q_60 &lt;- as.Date("2006-01-01") - 1
+q_61 &lt;- as.Date("2006-04-01") - 1
+q_62 &lt;- as.Date("2006-07-01") - 1
+q_63 &lt;- as.Date("2006-10-01") - 1
+q_64 &lt;- as.Date("2007-01-01") - 1
+q_65 &lt;- as.Date("2007-04-01") - 1
+q_66 &lt;- as.Date("2007-07-01") - 1
+q_67 &lt;- as.Date("2007-10-01") - 1
+q_68 &lt;- as.Date("2008-01-01") - 1
+q_69 &lt;- as.Date("2008-04-01") - 1
+q_70 &lt;- as.Date("2008-07-01") - 1
+q_71 &lt;- as.Date("2008-10-01") - 1
+q_72 &lt;- as.Date("2009-01-01") - 1
+q_73 &lt;- as.Date("2009-04-01") - 1
+q_74 &lt;- as.Date("2009-07-01") - 1
+q_75 &lt;- as.Date("2009-10-01") - 1
+q_76 &lt;- as.Date("2010-01-01") - 1
+q_77 &lt;- as.Date("2010-04-01") - 1
+q_78 &lt;- as.Date("2010-07-01") - 1
+q_79 &lt;- as.Date("2010-10-01") - 1
+q_80 &lt;- as.Date("2011-01-01") - 1
+q_81 &lt;- as.Date("2011-04-01") - 1
+q_82 &lt;- as.Date("2011-07-01") - 1
+q_83 &lt;- as.Date("2011-10-01") - 1
+q_84 &lt;- as.Date("2012-01-01") - 1
+q_85 &lt;- as.Date("2012-04-01") - 1
+q_86 &lt;- as.Date("2012-07-01") - 1
+q_87 &lt;- as.Date("2012-10-01") - 1
+q_88 &lt;- as.Date("2013-01-01") - 1
+q_89 &lt;- as.Date("2013-04-01") - 1
+q_90 &lt;- as.Date("2013-07-01") - 1
+q_91 &lt;- as.Date("2013-10-01") - 1
+q_92 &lt;- as.Date("2014-01-01") - 1
+q_93 &lt;- as.Date("2014-04-01") - 1
+```
+]
+
+---
+
+## Time-Dependent Data Encoding
+
+
+```r
+## Batch 01
+
+data_cabinets$etime_01 &lt;- q_01 - data_cabinets$start_minister
+data_cabinets$etime_01 &lt;- ifelse(data_cabinets$etime_01 &gt; 0, data_cabinets$etime_01, NA)
+
+data_cabinets$etime_02 &lt;- q_02 - data_cabinets$start_minister
+data_cabinets$etime_02 &lt;- ifelse(data_cabinets$etime_02 &gt; 0, data_cabinets$etime_02, NA)
+
+data_cabinets$etime_03 &lt;- q_03 - data_cabinets$start_minister
+data_cabinets$etime_03 &lt;- ifelse(data_cabinets$etime_03 &gt; 0, data_cabinets$etime_03, NA)
+
+data_cabinets$etime_04 &lt;- q_04 - data_cabinets$start_minister
+data_cabinets$etime_04 &lt;- ifelse(data_cabinets$etime_04 &gt; 0, data_cabinets$etime_04, NA)
+
+## Batch 02
+
+data_cabinets$etime_05 &lt;- q_05 - data_cabinets$start_minister
+data_cabinets$etime_05 &lt;- ifelse(data_cabinets$etime_05 &gt; 0, data_cabinets$etime_05, NA)
+
+data_cabinets$etime_06 &lt;- q_06 - data_cabinets$start_minister
+data_cabinets$etime_06 &lt;- ifelse(data_cabinets$etime_06 &gt; 0, data_cabinets$etime_06, NA)
+
+data_cabinets$etime_07 &lt;- q_07 - data_cabinets$start_minister
+data_cabinets$etime_07 &lt;- ifelse(data_cabinets$etime_07 &gt; 0, data_cabinets$etime_07, NA)
+
+data_cabinets$etime_08 &lt;- q_08 - data_cabinets$start_minister
+data_cabinets$etime_08 &lt;- ifelse(data_cabinets$etime_08 &gt; 0, data_cabinets$etime_08, NA)
+
+## Batch 03
+
+data_cabinets$etime_09 &lt;- q_09 - data_cabinets$start_minister
+data_cabinets$etime_09 &lt;- ifelse(data_cabinets$etime_09 &gt; 0, data_cabinets$etime_09, NA)
+
+data_cabinets$etime_10 &lt;- q_10 - data_cabinets$start_minister
+data_cabinets$etime_10 &lt;- ifelse(data_cabinets$etime_10 &gt; 0, data_cabinets$etime_10, NA)
+
+data_cabinets$etime_11 &lt;- q_11 - data_cabinets$start_minister
+data_cabinets$etime_11 &lt;- ifelse(data_cabinets$etime_11 &gt; 0, data_cabinets$etime_11, NA)
+
+data_cabinets$etime_12 &lt;- q_12 - data_cabinets$start_minister
+data_cabinets$etime_12 &lt;- ifelse(data_cabinets$etime_12 &gt; 0, data_cabinets$etime_12, NA)
+
+## Batch 04
+
+data_cabinets$etime_13 &lt;- q_13 - data_cabinets$start_minister
+data_cabinets$etime_13 &lt;- ifelse(data_cabinets$etime_13 &gt; 0, data_cabinets$etime_13, NA)
+
+data_cabinets$etime_14 &lt;- q_14 - data_cabinets$start_minister
+data_cabinets$etime_14 &lt;- ifelse(data_cabinets$etime_14 &gt; 0, data_cabinets$etime_14, NA)
+
+data_cabinets$etime_15 &lt;- q_15 - data_cabinets$start_minister
+data_cabinets$etime_15 &lt;- ifelse(data_cabinets$etime_15 &gt; 0, data_cabinets$etime_15, NA)
+
+data_cabinets$etime_16 &lt;- q_16 - data_cabinets$start_minister
+data_cabinets$etime_16 &lt;- ifelse(data_cabinets$etime_16 &gt; 0, data_cabinets$etime_16, NA)
+
+## Batch 05
+
+data_cabinets$etime_17 &lt;- q_17 - data_cabinets$start_minister
+data_cabinets$etime_17 &lt;- ifelse(data_cabinets$etime_17 &gt; 0, data_cabinets$etime_17, NA)
+
+data_cabinets$etime_18 &lt;- q_18 - data_cabinets$start_minister
+data_cabinets$etime_18 &lt;- ifelse(data_cabinets$etime_18 &gt; 0, data_cabinets$etime_18, NA)
+
+data_cabinets$etime_19 &lt;- q_19 - data_cabinets$start_minister
+data_cabinets$etime_19 &lt;- ifelse(data_cabinets$etime_19 &gt; 0, data_cabinets$etime_19, NA)
+
+data_cabinets$etime_20 &lt;- q_20 - data_cabinets$start_minister
+data_cabinets$etime_20 &lt;- ifelse(data_cabinets$etime_20 &gt; 0, data_cabinets$etime_20, NA)
+
+## Batch 06
+
+data_cabinets$etime_21 &lt;- q_21 - data_cabinets$start_minister
+data_cabinets$etime_21 &lt;- ifelse(data_cabinets$etime_21 &gt; 0, data_cabinets$etime_21, NA)
+
+data_cabinets$etime_22 &lt;- q_22 - data_cabinets$start_minister
+data_cabinets$etime_22 &lt;- ifelse(data_cabinets$etime_22 &gt; 0, data_cabinets$etime_22, NA)
+
+data_cabinets$etime_23 &lt;- q_23 - data_cabinets$start_minister
+data_cabinets$etime_23 &lt;- ifelse(data_cabinets$etime_23 &gt; 0, data_cabinets$etime_23, NA)
+
+data_cabinets$etime_24 &lt;- q_24 - data_cabinets$start_minister
+data_cabinets$etime_24 &lt;- ifelse(data_cabinets$etime_24 &gt; 0, data_cabinets$etime_24, NA)
+
+## Batch 07
+
+data_cabinets$etime_25 &lt;- q_25 - data_cabinets$start_minister
+data_cabinets$etime_25 &lt;- ifelse(data_cabinets$etime_25 &gt; 0, data_cabinets$etime_25, NA)
+
+data_cabinets$etime_26 &lt;- q_26 - data_cabinets$start_minister
+data_cabinets$etime_26 &lt;- ifelse(data_cabinets$etime_26 &gt; 0, data_cabinets$etime_26, NA)
+
+data_cabinets$etime_27 &lt;- q_27 - data_cabinets$start_minister
+data_cabinets$etime_27 &lt;- ifelse(data_cabinets$etime_27 &gt; 0, data_cabinets$etime_27, NA)
+
+data_cabinets$etime_28 &lt;- q_28 - data_cabinets$start_minister
+data_cabinets$etime_28 &lt;- ifelse(data_cabinets$etime_28 &gt; 0, data_cabinets$etime_28, NA)
+
+## Batch 08
+
+data_cabinets$etime_29 &lt;- q_29 - data_cabinets$start_minister
+data_cabinets$etime_29 &lt;- ifelse(data_cabinets$etime_29 &gt; 0, data_cabinets$etime_29, NA)
+
+data_cabinets$etime_30 &lt;- q_30 - data_cabinets$start_minister
+data_cabinets$etime_30 &lt;- ifelse(data_cabinets$etime_30 &gt; 0, data_cabinets$etime_30, NA)
+
+data_cabinets$etime_31 &lt;- q_31 - data_cabinets$start_minister
+data_cabinets$etime_31 &lt;- ifelse(data_cabinets$etime_31 &gt; 0, data_cabinets$etime_31, NA)
+
+data_cabinets$etime_32 &lt;- q_32 - data_cabinets$start_minister
+data_cabinets$etime_32 &lt;- ifelse(data_cabinets$etime_32 &gt; 0, data_cabinets$etime_32, NA)
+
+## Batch 09
+
+data_cabinets$etime_33 &lt;- q_33 - data_cabinets$start_minister
+data_cabinets$etime_33 &lt;- ifelse(data_cabinets$etime_33 &gt; 0, data_cabinets$etime_33, NA)
+
+data_cabinets$etime_34 &lt;- q_34 - data_cabinets$start_minister
+data_cabinets$etime_34 &lt;- ifelse(data_cabinets$etime_34 &gt; 0, data_cabinets$etime_34, NA)
+
+data_cabinets$etime_35 &lt;- q_35 - data_cabinets$start_minister
+data_cabinets$etime_35 &lt;- ifelse(data_cabinets$etime_35 &gt; 0, data_cabinets$etime_35, NA)
+
+data_cabinets$etime_36 &lt;- q_36 - data_cabinets$start_minister
+data_cabinets$etime_36 &lt;- ifelse(data_cabinets$etime_36 &gt; 0, data_cabinets$etime_36, NA)
+
+## Batch 10
+
+data_cabinets$etime_37 &lt;- q_37 - data_cabinets$start_minister
+data_cabinets$etime_37 &lt;- ifelse(data_cabinets$etime_37 &gt; 0, data_cabinets$etime_37, NA)
+
+data_cabinets$etime_38 &lt;- q_38 - data_cabinets$start_minister
+data_cabinets$etime_38 &lt;- ifelse(data_cabinets$etime_38 &gt; 0, data_cabinets$etime_38, NA)
+
+data_cabinets$etime_39 &lt;- q_39 - data_cabinets$start_minister
+data_cabinets$etime_39 &lt;- ifelse(data_cabinets$etime_39 &gt; 0, data_cabinets$etime_39, NA)
+
+data_cabinets$etime_40 &lt;- q_40 - data_cabinets$start_minister
+data_cabinets$etime_40 &lt;- ifelse(data_cabinets$etime_40 &gt; 0, data_cabinets$etime_40, NA)
+
+## Batch 11
+
+data_cabinets$etime_41 &lt;- q_41 - data_cabinets$start_minister
+data_cabinets$etime_41 &lt;- ifelse(data_cabinets$etime_41 &gt; 0, data_cabinets$etime_41, NA)
+
+data_cabinets$etime_42 &lt;- q_42 - data_cabinets$start_minister
+data_cabinets$etime_42 &lt;- ifelse(data_cabinets$etime_42 &gt; 0, data_cabinets$etime_42, NA)
+
+data_cabinets$etime_43 &lt;- q_43 - data_cabinets$start_minister
+data_cabinets$etime_43 &lt;- ifelse(data_cabinets$etime_43 &gt; 0, data_cabinets$etime_43, NA)
+
+data_cabinets$etime_44 &lt;- q_44 - data_cabinets$start_minister
+data_cabinets$etime_44 &lt;- ifelse(data_cabinets$etime_44 &gt; 0, data_cabinets$etime_44, NA)
+
+## Batch 12
+
+data_cabinets$etime_45 &lt;- q_45 - data_cabinets$start_minister
+data_cabinets$etime_45 &lt;- ifelse(data_cabinets$etime_45 &gt; 0, data_cabinets$etime_45, NA)
+
+data_cabinets$etime_46 &lt;- q_46 - data_cabinets$start_minister
+data_cabinets$etime_46 &lt;- ifelse(data_cabinets$etime_46 &gt; 0, data_cabinets$etime_46, NA)
+
+data_cabinets$etime_47 &lt;- q_47 - data_cabinets$start_minister
+data_cabinets$etime_47 &lt;- ifelse(data_cabinets$etime_47 &gt; 0, data_cabinets$etime_47, NA)
+
+data_cabinets$etime_48 &lt;- q_48 - data_cabinets$start_minister
+data_cabinets$etime_48 &lt;- ifelse(data_cabinets$etime_48 &gt; 0, data_cabinets$etime_48, NA)
+
+## Batch 13
+
+data_cabinets$etime_49 &lt;- q_49 - data_cabinets$start_minister
+data_cabinets$etime_49 &lt;- ifelse(data_cabinets$etime_49 &gt; 0, data_cabinets$etime_49, NA)
+
+data_cabinets$etime_50 &lt;- q_50 - data_cabinets$start_minister
+data_cabinets$etime_50 &lt;- ifelse(data_cabinets$etime_50 &gt; 0, data_cabinets$etime_50, NA)
+
+data_cabinets$etime_51 &lt;- q_51 - data_cabinets$start_minister
+data_cabinets$etime_51 &lt;- ifelse(data_cabinets$etime_51 &gt; 0, data_cabinets$etime_51, NA)
+
+data_cabinets$etime_52 &lt;- q_52 - data_cabinets$start_minister
+data_cabinets$etime_52 &lt;- ifelse(data_cabinets$etime_52 &gt; 0, data_cabinets$etime_52, NA)
+
+## Batch 14
+
+data_cabinets$etime_53 &lt;- q_53 - data_cabinets$start_minister
+data_cabinets$etime_53 &lt;- ifelse(data_cabinets$etime_53 &gt; 0, data_cabinets$etime_53, NA)
+
+data_cabinets$etime_54 &lt;- q_54 - data_cabinets$start_minister
+data_cabinets$etime_54 &lt;- ifelse(data_cabinets$etime_54 &gt; 0, data_cabinets$etime_54, NA)
+
+data_cabinets$etime_55 &lt;- q_55 - data_cabinets$start_minister
+data_cabinets$etime_55 &lt;- ifelse(data_cabinets$etime_55 &gt; 0, data_cabinets$etime_55, NA)
+
+data_cabinets$etime_56 &lt;- q_56 - data_cabinets$start_minister
+data_cabinets$etime_56 &lt;- ifelse(data_cabinets$etime_56 &gt; 0, data_cabinets$etime_56, NA)
+
+## Batch 15
+
+data_cabinets$etime_57 &lt;- q_57 - data_cabinets$start_minister
+data_cabinets$etime_57 &lt;- ifelse(data_cabinets$etime_57 &gt; 0, data_cabinets$etime_57, NA)
+
+data_cabinets$etime_58 &lt;- q_58 - data_cabinets$start_minister
+data_cabinets$etime_58 &lt;- ifelse(data_cabinets$etime_58 &gt; 0, data_cabinets$etime_58, NA)
+
+data_cabinets$etime_59 &lt;- q_59 - data_cabinets$start_minister
+data_cabinets$etime_59 &lt;- ifelse(data_cabinets$etime_59 &gt; 0, data_cabinets$etime_59, NA)
+
+data_cabinets$etime_60 &lt;- q_60 - data_cabinets$start_minister
+data_cabinets$etime_60 &lt;- ifelse(data_cabinets$etime_60 &gt; 0, data_cabinets$etime_60, NA)
+
+## Batch 16
+
+data_cabinets$etime_61 &lt;- q_61 - data_cabinets$start_minister
+data_cabinets$etime_61 &lt;- ifelse(data_cabinets$etime_61 &gt; 0, data_cabinets$etime_61, NA)
+
+data_cabinets$etime_62 &lt;- q_62 - data_cabinets$start_minister
+data_cabinets$etime_62 &lt;- ifelse(data_cabinets$etime_62 &gt; 0, data_cabinets$etime_62, NA)
+
+data_cabinets$etime_63 &lt;- q_63 - data_cabinets$start_minister
+data_cabinets$etime_63 &lt;- ifelse(data_cabinets$etime_63 &gt; 0, data_cabinets$etime_63, NA)
+
+data_cabinets$etime_64 &lt;- q_64 - data_cabinets$start_minister
+data_cabinets$etime_64 &lt;- ifelse(data_cabinets$etime_64 &gt; 0, data_cabinets$etime_64, NA)
+
+## Batch 17
+
+data_cabinets$etime_65 &lt;- q_65 - data_cabinets$start_minister
+data_cabinets$etime_65 &lt;- ifelse(data_cabinets$etime_65 &gt; 0, data_cabinets$etime_65, NA)
+
+data_cabinets$etime_66 &lt;- q_66 - data_cabinets$start_minister
+data_cabinets$etime_66 &lt;- ifelse(data_cabinets$etime_66 &gt; 0, data_cabinets$etime_66, NA)
+
+data_cabinets$etime_67 &lt;- q_67 - data_cabinets$start_minister
+data_cabinets$etime_67 &lt;- ifelse(data_cabinets$etime_67 &gt; 0, data_cabinets$etime_67, NA)
+
+data_cabinets$etime_68 &lt;- q_68 - data_cabinets$start_minister
+data_cabinets$etime_68 &lt;- ifelse(data_cabinets$etime_68 &gt; 0, data_cabinets$etime_68, NA)
+
+## Batch 18
+
+data_cabinets$etime_69 &lt;- q_69 - data_cabinets$start_minister
+data_cabinets$etime_69 &lt;- ifelse(data_cabinets$etime_69 &gt; 0, data_cabinets$etime_69, NA)
+
+data_cabinets$etime_70 &lt;- q_70 - data_cabinets$start_minister
+data_cabinets$etime_70 &lt;- ifelse(data_cabinets$etime_70 &gt; 0, data_cabinets$etime_70, NA)
+
+data_cabinets$etime_71 &lt;- q_71 - data_cabinets$start_minister
+data_cabinets$etime_71 &lt;- ifelse(data_cabinets$etime_71 &gt; 0, data_cabinets$etime_71, NA)
+
+data_cabinets$etime_72 &lt;- q_72 - data_cabinets$start_minister
+data_cabinets$etime_72 &lt;- ifelse(data_cabinets$etime_72 &gt; 0, data_cabinets$etime_72, NA)
+
+## Batch 19
+
+data_cabinets$etime_73 &lt;- q_73 - data_cabinets$start_minister
+data_cabinets$etime_73 &lt;- ifelse(data_cabinets$etime_73 &gt; 0, data_cabinets$etime_73, NA)
+
+data_cabinets$etime_74 &lt;- q_74 - data_cabinets$start_minister
+data_cabinets$etime_74 &lt;- ifelse(data_cabinets$etime_74 &gt; 0, data_cabinets$etime_74, NA)
+
+data_cabinets$etime_75 &lt;- q_75 - data_cabinets$start_minister
+data_cabinets$etime_75 &lt;- ifelse(data_cabinets$etime_75 &gt; 0, data_cabinets$etime_75, NA)
+
+data_cabinets$etime_76 &lt;- q_76 - data_cabinets$start_minister
+data_cabinets$etime_76 &lt;- ifelse(data_cabinets$etime_76 &gt; 0, data_cabinets$etime_76, NA)
+
+## Batch 20
+
+data_cabinets$etime_77 &lt;- q_77 - data_cabinets$start_minister
+data_cabinets$etime_77 &lt;- ifelse(data_cabinets$etime_77 &gt; 0, data_cabinets$etime_77, NA)
+
+data_cabinets$etime_78 &lt;- q_78 - data_cabinets$start_minister
+data_cabinets$etime_78 &lt;- ifelse(data_cabinets$etime_78 &gt; 0, data_cabinets$etime_78, NA)
+
+data_cabinets$etime_79 &lt;- q_79 - data_cabinets$start_minister
+data_cabinets$etime_79 &lt;- ifelse(data_cabinets$etime_79 &gt; 0, data_cabinets$etime_79, NA)
+
+data_cabinets$etime_80 &lt;- q_80 - data_cabinets$start_minister
+data_cabinets$etime_80 &lt;- ifelse(data_cabinets$etime_80 &gt; 0, data_cabinets$etime_80, NA)
+
+## Batch 21
+
+data_cabinets$etime_81 &lt;- q_81 - data_cabinets$start_minister
+data_cabinets$etime_81 &lt;- ifelse(data_cabinets$etime_81 &gt; 0, data_cabinets$etime_81, NA)
+
+data_cabinets$etime_82 &lt;- q_82 - data_cabinets$start_minister
+data_cabinets$etime_82 &lt;- ifelse(data_cabinets$etime_82 &gt; 0, data_cabinets$etime_82, NA)
+
+data_cabinets$etime_83 &lt;- q_83 - data_cabinets$start_minister
+data_cabinets$etime_83 &lt;- ifelse(data_cabinets$etime_83 &gt; 0, data_cabinets$etime_83, NA)
+
+data_cabinets$etime_84 &lt;- q_84 - data_cabinets$start_minister
+data_cabinets$etime_84 &lt;- ifelse(data_cabinets$etime_84 &gt; 0, data_cabinets$etime_84, NA)
+
+## Batch 22
+
+data_cabinets$etime_85 &lt;- q_85 - data_cabinets$start_minister
+data_cabinets$etime_85 &lt;- ifelse(data_cabinets$etime_85 &gt; 0, data_cabinets$etime_85, NA)
+
+data_cabinets$etime_86 &lt;- q_86 - data_cabinets$start_minister
+data_cabinets$etime_86 &lt;- ifelse(data_cabinets$etime_86 &gt; 0, data_cabinets$etime_86, NA)
+
+data_cabinets$etime_87 &lt;- q_87 - data_cabinets$start_minister
+data_cabinets$etime_87 &lt;- ifelse(data_cabinets$etime_87 &gt; 0, data_cabinets$etime_87, NA)
+
+data_cabinets$etime_88 &lt;- q_88 - data_cabinets$start_minister
+data_cabinets$etime_88 &lt;- ifelse(data_cabinets$etime_88 &gt; 0, data_cabinets$etime_88, NA)
+
+## Batch 23
+
+data_cabinets$etime_89 &lt;- q_89 - data_cabinets$start_minister
+data_cabinets$etime_89 &lt;- ifelse(data_cabinets$etime_89 &gt; 0, data_cabinets$etime_89, NA)
+
+data_cabinets$etime_90 &lt;- q_90 - data_cabinets$start_minister
+data_cabinets$etime_90 &lt;- ifelse(data_cabinets$etime_90 &gt; 0, data_cabinets$etime_90, NA)
+
+data_cabinets$etime_91 &lt;- q_91 - data_cabinets$start_minister
+data_cabinets$etime_91 &lt;- ifelse(data_cabinets$etime_91 &gt; 0, data_cabinets$etime_91, NA)
+
+data_cabinets$etime_92 &lt;- q_92 - data_cabinets$start_minister
+data_cabinets$etime_92 &lt;- ifelse(data_cabinets$etime_92 &gt; 0, data_cabinets$etime_92, NA)
+
+## Batch 24
+
+data_cabinets$etime_93 &lt;- q_93 - data_cabinets$start_minister
+data_cabinets$etime_93 &lt;- ifelse(data_cabinets$etime_93 &gt; 0, data_cabinets$etime_93, NA)
+```
+
+---
+
+## Time-Dependent Data Set
+
+
+```r
+## Key Package
+library(survival)
+
+## Tmerge Function
+time_dep_data &lt;- tmerge(data_cabinets[, 1:18], data_cabinets, id = id, 
+                        tstop = time_minister)
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_01))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_02))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_03))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_04))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_05))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_06))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_07))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_08))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_09))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_10))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_11))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_12))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_13))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_14))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_15))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_16))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_17))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_18))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_19))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_20))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_21))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_22))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_23))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_24))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_25))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_26))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_27))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_28))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_29))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_30))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_31))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_32))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_33))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_34))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_35))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_36))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_37))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_38))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_39))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_40))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_41))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_42))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_43))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_44))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_45))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_46))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_47))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_48))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_49))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_50))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_51))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_52))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_53))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_54))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_55))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_56))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_57))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_58))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_59))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_60))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_61))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_62))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_63))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_64))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_65))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_66))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_67))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_68))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_69))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_70))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_71))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_72))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_73))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_74))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_75))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_76))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_77))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_78))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_79))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_80))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_81))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_82))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_83))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_84))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_85))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_86))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_87))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_88))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_89))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_90))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_91))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_92))
+time_dep_data &lt;- tmerge(time_dep_data, data_cabinets, id = id, remain = event(etime_93))
+```
+
+---
+
+## Time-Varying Variables
+
+We merge in each interval `\(Z(t)\)` quarterly smoothed presidential approval with &lt;span style="color:orange"&gt;**Carlin, Hartlyn, Hellwig, Love, Martinez-Gallardo, and Singer (2019)**&lt;/span&gt; data, &lt;span style="color:orange"&gt;**World Bank (2020)**&lt;/span&gt; macroeconomic indicators and the legislative effective number of parties (ENP) with the &lt;span style="color:orange"&gt;**Gallagher and Mitchell (2005)**&lt;/span&gt; indicator updated. 
+
+The full code programmed to merge this time-varying variables is available in the RMarkdown R Demonstration.
+
+This allowed us to obtain a set of &lt;span style="color:orange"&gt;**4,245 observations**&lt;/span&gt; to which we applied administrative censoring in the final interval when it coincided with the end of the corresponding presidential term. 
+
+---
+
+class: chapter-slide
+
+# Results
+
+---
+
+## Exploratory Data Analysis
+
+
+
+This chunk corresponds to the precoding stage, and the packages are necessary not only for EDA but also for time-varying exposure Cox regressions and propensity score and matching applications.
+
+
+```r
+## Packages
+library(tidyverse)
+library(survival)
+library(survminer)
+library(stargazer)
+library(MatchIt)
+library(cobalt)
+library(fmsb)
+library(sjPlot)
+
+## Time-Dependent Data Set
+time_dep_data  &lt;- read.csv("../data/tidy/time_dependent_Brazil_Chile.csv", sep = ",", 
+                           encoding = "UTF-8")
+
+## EAD 2.0
+ead_set &lt;- read.csv("../data/raw/EAD/EAD+2.0+quarter+101019.csv", sep = ",", 
+                    encoding = "UTF-8")
+ead_set &lt;- filter(ead_set, ccode == "Brazil" | ccode == "Chile")
+```
+
+---
+
+## LOESS of Presidential Approval
+
+.pull-left[
+
+```r
+ggplot(subset(ead_set, year &gt; 1989 &amp; year &lt; 2015), 
+       aes(x = year, y = Approval_Smoothed, col = ccode)) + 
+  geom_smooth(aes(linetype = ccode, fill = ccode)) +
+  geom_hline(yintercept = 40, col = "black", lty = 2) +
+  theme_useR(base_size = 18) +
+  theme(panel.grid.minor = element_blank()) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1, color = "black",  
+                                   size = 9)) +
+  labs(x = "Year", y = "Presidential Approval", title = NULL, subtitle = NULL) +
+  theme(legend.title = element_blank()) +
+  scale_colour_manual(values = viridis(2, direction = -1, option = "viridis")) +
+  scale_fill_manual(values = viridis(2, alpha = 0.8, direction = -1, 
+                                     option = "viridis")) +
+  scale_linetype_manual(values = c(1, 3)) 
+```
+]
+
+.pull-right[
+![](bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Kaplan-Meier Estimations for Ministers
+
+.pull-left[
+
+```r
+time_dep_data$country &lt;- as.factor(time_dep_data$country)
+time_dep_data$fail &lt;- ifelse((time_dep_data$remain == 0 
+                              &amp; time_dep_data$adm_cens != 1), 1, 0)
+fit.country &lt;- survfit(Surv(tstart, tstop, fail == 1) ~ I(country) 
+                       + cluster(id), data = time_dep_data)
+ggsurvplot(fit.country, data = time_dep_data, title = NULL, conf.int = TRUE, 
+           conf.int.style = "step",
+           censor = FALSE, legend = "bottom", pval = FALSE, pval.method = TRUE,
+           surv.median.line = "hv", palette = viridis(2, direction = -1, 
+                                                      option = "viridis"), 
+           ggtheme = theme_useR(base_size = 18),
+           legend.title = "", legend.labs = c("Brazil", "Chile"),
+           risk.table = FALSE, cumevents = FALSE, tables.height = 0.15,
+           tables.theme = theme_cleantable(),
+           tables.y.text = FALSE, 
+           xlab = "Time in Days", break.time.by = 365,
+           ylab = "Probability of Survival in the Cabinet")
+```
+]
+
+.pull-right[
+&lt;img src="bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-14-1.png" title="Nonparametric Kaplan-Meier estimation based on individual ministerial terminations" alt="Nonparametric Kaplan-Meier estimation based on individual ministerial terminations"  /&gt;
+]
+
+---
+
+class: chapter-slide
+
+# Causal Identification Strategy
+
+---
+
+## Time-Varying Exposure Cox Regressions
+
+Our baseline model does not include any covariates or specifications. 
+
+We then extended the equation incorporating moderating covariates `\(X_{j[i]}\)`, controlling for government and country fixed effects, including a vector of controls `\(C_k\)` with _k-th_ potential confounders that are subsequently used to estimate the propensity score, and clustering observations.
+
+Next, we incorporated the interaction effect between low presidential approval `\(D_{i}\)` and our covariates `\(X_{j[i]}\)`, denoting _j-th_ type covariates that are incorporated in separate models with the term `\(\delta_{j} D_{i} \times X_{j[i]}\)`.
+
+---
+
+## Propensity Score Analysis, Matching and Moderation Analysis
+
+To control for the non-random selection problem in our observational data, we next employed &lt;span style="color:orange"&gt;**propensity score analysis and matching techniques**&lt;/span&gt; to correct for imbalances and control for bias. 
+
+We estimated the propensity score by performing a probit regression of periods of low presidential approval `\(D_{i}\)` with the moderating covariates `\(X_{j[i]}\)`, government and country fixed effects and the potential confounders that make up the vector `\(C_{k}\)`.
+
+We then classified _i-th_ observations into different propensity score balanced groups with different algorithms &lt;span style="color:orange"&gt;**(Austin and Stuart, 2015)**&lt;/span&gt;.
+
+---
+
+## Love Plot
+
+
+
+.pull-left[
+
+```r
+love.plot(m_out_1, stat = "mean.diffs", poly = 1, abs = TRUE,
+          weights = list(m_out_2),
+          drop.distance = TRUE, thresholds = c(m = .1), 
+          var.order = "unadjusted",
+          shapes = c("square", "circle", "triangle"),
+          colors = viridis(3, direction = -1, option = "viridis"),
+          var.names = loveplot_var,
+          sample.names = c("Unmatched", "NN Matching", "Full Matching"),
+          line = FALSE, stars = "none", title = NULL) + 
+  theme_useR(base_size = 18) +
+  theme(legend.title = element_blank()) 
+```
+]
+
+.pull-right[
+![](bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+]
+
+---
+
+## Outcome Models
+
+Only legislative ENP and inflation fail to balance with full matching. Consequently, we integrated these variables as controls in the outcome models &lt;span style="color:orange"&gt;**(Austin, Grootendorst, and Anderson, 2007)**&lt;/span&gt;. 
+
+In addition, we incorporated the weights obtained with the matching process and adjusted for the `\(s\)`-$th$ clusters of the matching to test the effect of exposure to low presidential approval on individual ministerial terminations &lt;span style="color:orange"&gt;**(Ho, Imai, King, and Stuart, 2011)**&lt;/span&gt;.
+
+
+Then, we included interaction terms between low approval `\(D_i\)` and our moderation factors `\(X_{j[i]}\)`, using `\(\delta_j w_i D_i \times X_{j[i]}\)` in separate models to perform the moderation analysis. 
+
+Finally, we fitted a number of placebo and robustness checks.
+
+---
+
+## Predicted Risk
+
+
+
+.pull-left[
+
+```r
+plot_model(labelled_model_1 , type = "int", mdrt.values = "minmax", 
+           ci.lvl = 0.95, colors = viridis(2, direction = -1, 
+                                           option = "viridis")) +
+  theme_useR(base_size = 18) +
+  labs(x = "\nPresidential Approval", y = "Predicted Risk", caption = "") +
+  ggtitle("") + theme(axis.title.x = element_text(face = "bold"),
+        axis.title.y = element_text(face = "bold"),
+        legend.title = element_blank(),
+        panel.border = element_rect(colour = "black", fill = NA, size = 0.7),
+        panel.background = element_blank(),
+        axis.line = element_blank()) 
+```
+]
+
+.pull-left[
+![](bgonzalezbustamante_user_R_2022_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+]
+
+---
+
+# Useful Information
+
+- You can email me at [bastian.gonzalezbustamante@politics.ox.ac.uk](mailto:bastian.gonzalezbustamante@politics.ox.ac.uk)
+
+- Or check my website [bgonzalezbustamante.com](https://bgonzalezbustamante.com/)
+
+- This [OSF view-only link](https://osf.io/asgbj/?view_only=144acd6c8eca4836880b57dee85ea4ff) offers access to the private project in progress, which contains the R demonstration in Markdown and an **early preprint** of the work more focused on the phenomenon than on methodological applications.
+
+- The OSF project is connected with the private (for now) repository _time-dep-cabinet-data_ on GitHub, which hosts the complete R code with version control and metadata.
+
+- This is the permalink to the latest version of this presentation
+
+---
+
+# References
+
+Austin, P. C., P. Grootendorst, and G. M. Anderson (2007). "A
+comparison of the ability of different propensity score models to
+balance measured variables between treated and untreated subjects: a
+Monte Carlo study". In: _Statistics in Medicine_ 26.4, pp. 734-753.
+DOI: [10.1002/sim.2580](https://doi.org/10.1002%2Fsim.2580).
+
+Austin, P. C. and E. A. Stuart (2015). "Optimal full matching for
+survival outcomes: a method that merits more widespread use". In:
+_Statistics in Medicine_ 34.30, pp. 3949-3967. DOI:
+[10.1002/sim.6602](https://doi.org/10.1002%2Fsim.6602).
+
+Carlin, R. E., J. Hartlyn, T. Hellwig, et al. (2019). _Executive
+Approval Database 2.0_. Dataset. Available at
+http://www.executiveapproval.org/. Executive Approval Project.
+
+Franz, P. and A. Codato (2016). _Ministros de Estado: governos FHC e
+Lula (1995-2010)_. Dataset. Available at http://observatory-elites.org.
+Observatory of Social and Political Elites of Brazil, Universidade
+Federal do Paraná.
+
+Gallagher, M. and P. Mitchell (2005). _The Politics of Electoral
+Systems_. New York: Oxford University Press. DOI:
+[10.1093/0199257566.001.0001](https://doi.org/10.1093%2F0199257566.001.0001).
+
+González-Bustamante, B. and A. Olivares (2022). _Data Set on Chilean
+Ministers (1990-2014) (Version 3.3.6 - Dry Bonus)_. Dataset. DOI:
+[10.5281/ZENODO.5744536](https://doi.org/10.5281%2FZENODO.5744536).
+
+Ho, D. E., K. Imai, G. King, et al. (2011). "MatchIt: Nonparametric
+Preprocessing for Parametric Causal Inference". In: _Journal of
+Statistical Software_ 42.8, pp. 1-28. DOI:
+[10.18637/jss.v042.i08](https://doi.org/10.18637%2Fjss.v042.i08).
+
+Martinez-Gallardo, C. (2014). "Designing Cabinet: Presidential Politics
+and Ministerial Instability". In: _Journal of Politics in Latin
+America_ 6.2, pp. 3-38.
+
+Therneau, T., C. Crowson, and E. Atkinson (2020). _Using Time Dependent
+Covariates and Time Dependent Coefficients in the Cox Model_. Vignette.
+Package 'survival' version 3.2-7. Mayo Clinic.
+
+World Bank (2020). _World Bank Open Data_. Dataset. Available at
+https://data.worldbank.org. World Bank.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
