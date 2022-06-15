@@ -4,7 +4,7 @@
 
 ## Overview
 
-This repository contains a selection of Bastián González-Bustamante's recent public presentations at seminars and conferences in LaTeX Beamer format.
+This repository contains a selection of Bastián González-Bustamante's recent public presentations at seminars and conferences in LaTeX Beamer and Xaringan formats.
 
 ## Selected Conference Presentations
 
