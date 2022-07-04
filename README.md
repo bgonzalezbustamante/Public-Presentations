@@ -1,6 +1,6 @@
 # Public-Presentations
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](STATUS.md) [![ORCID](https://img.shields.io/badge/ORCID%20iD-0000--0003--1510--6820-brightgreen.svg)](http://orcid.org/0000-0003-1510-6820) [![License](https://img.shields.io/badge/license-CC%20BY%204.0-black)](LICENSE.md) [![Latex](https://img.shields.io/badge/made%20with-LaTeX-1f425f.svg)](https://www.latex-project.org/)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](STATUS.md) [![ORCID](https://img.shields.io/badge/ORCID%20iD-0000--0003--1510--6820-brightgreen.svg)](http://orcid.org/0000-0003-1510-6820) [![License](https://img.shields.io/badge/license-CC%20BY%204.0-black)](LICENSE.md) [![Latex](https://img.shields.io/badge/made%20with-LaTeX-1f425f.svg)](https://www.latex-project.org)
 
 ## Overview
 
