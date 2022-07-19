@@ -6,9 +6,9 @@
 
 This repository contains a selection of Bastián González-Bustamante's recent public presentations at seminars and conferences in LaTeX Beamer and Xaringan formats.
 
-## Selected Conference Presentations
+## Selected Conference Presentations {.tabset .tabset-fade}
 
-### 2022
+### tab 2022
 
 * González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). Digital Development and Open Government: Evidence from Chilean Local Governments. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. [In English]
 
@@ -30,7 +30,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 - González-Bustamante, B., & Cisternas, C. (2022). *Seniority and Cosponsorship in the Chilean Lower House 2006-2018*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-Seniority-2022.pdf)**.
 
-### 2021
+### tab 2021
 
 - González-Bustamante, B. (2021). *The Use of Machine Learning for Public Affairs Research*. Presentation delivered the XII Chilean Congress of Public Administration, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-Congreso-AP-2021.pdf)**.
 
@@ -46,7 +46,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 - González-Bustamante, B. (2021). *Data Mining, Modelling and Machine Learning Applications for Social Sciences*. Presentation delivered at the I Training Data Lab Workshop, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-DataLab-2021.pdf)**.
 
-### 2020
+### tab 2020
 
 - González-Bustamante, B. (2020). *Evolution and Early Governmental Responses to COVID-19 in South America*. Presentation delivered at the Workshop of the School of Political Science and Public Administration at the Universidad de Talca, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2020/Beamer-UTalca-2020.pdf)**.
 
