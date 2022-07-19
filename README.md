@@ -6,11 +6,9 @@
 
 This repository contains a selection of Bastián González-Bustamante's recent public presentations at seminars and conferences in LaTeX Beamer and Xaringan formats.
 
-## Selected Conference Presentations
+## Selected Conference Presentations {.tabset}
 
-| 2020 | 2021 | 2020 | 
-
-### 2022
+### 2022 {.active}
 
 * González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). Digital Development and Open Government: Evidence from Chilean Local Governments. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. [In English]
 
@@ -48,7 +46,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 - González-Bustamante, B. (2021). *Data Mining, Modelling and Machine Learning Applications for Social Sciences*. Presentation delivered at the I Training Data Lab Workshop, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-DataLab-2021.pdf)**.
 
-### tab 2020
+### 2020
 
 - González-Bustamante, B. (2020). *Evolution and Early Governmental Responses to COVID-19 in South America*. Presentation delivered at the Workshop of the School of Political Science and Public Administration at the Universidad de Talca, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2020/Beamer-UTalca-2020.pdf)**.
 
