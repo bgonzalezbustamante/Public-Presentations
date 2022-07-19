@@ -8,8 +8,9 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ## Selected Conference Presentations
 
-<details>
-<summary>### 2022</summary>
+| 2020 | 2021 | 2020 | 
+
+### 2022
 
 * González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). Digital Development and Open Government: Evidence from Chilean Local Governments. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. [In English]
 
@@ -30,7 +31,6 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 * González-Bustamante, B. (2022). *Resignation Calls and Ministerial Turnover in Latin America: Notes on Data Gathering using Machine Learning*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-RC-2022.pdf)**.
 
 * González-Bustamante, B., & Cisternas, C. (2022). *Seniority and Cosponsorship in the Chilean Lower House 2006-2018*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-Seniority-2022.pdf)**.
-</details>
 
 ### 2021
 
