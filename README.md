@@ -6,9 +6,9 @@
 
 This repository contains a selection of Bastián González-Bustamante's recent public presentations at seminars and conferences in LaTeX Beamer and Xaringan formats.
 
-## Selected Conference Presentations {. tabset}
+## Selected Conference Presentations
 
-### 2022 {. active}
+### 2022
 
 * González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). Digital Development and Open Government: Evidence from Chilean Local Governments. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. [In English]
 
