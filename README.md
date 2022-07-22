@@ -16,7 +16,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 * González-Bustamante, B. (2022). *Quantitative Methods for Studying Elites: Practical Applications, Biases and Potential.* Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-ALACIP-QM-Elites-2022.pdf)**.
 
-* González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Municipalities*. Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish by D. Aguilar] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/ALACIP_22_Desarrollo_digital_y_gobierno_abierto.pdf)**.
+* González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Municipalities*. Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish by D. Aguilar] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/ALACIP_22_Desarrollo_digital_y_gobierno_abierto.pdf)**.
 
 * González-Bustamante, B. (2022). *Ministerial Stability During Presidential Approval Crises: Evidence from Brazil and Chile*. Presentation delivered at the Political Studies Association Early Career Network Annual Conference, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-PSA-ECN-Ministers-2022.pdf)** **[[Video on Youtube]](https://youtu.be/Bdksuh7rfdk)**.
 
