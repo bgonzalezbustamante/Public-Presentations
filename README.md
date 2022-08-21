@@ -10,8 +10,6 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ### 2022
 
-* González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). Digital Development and Open Government: Evidence from Chilean Local Governments. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. [In English]
-
 * González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Local Governments*. Presentation delivered at the International Political Science Association Seminar Smart Cities and Open Government: Local Responses to Participation, Public Information, and Democracy, Madrid. [In English]
 
 * González-Bustamante, B. (2022). *Quantitative Methods for Studying Elites: Practical Applications, Biases and Potential.* Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-ALACIP-QM-Elites-2022.pdf)**.
