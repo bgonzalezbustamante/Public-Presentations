@@ -12,7 +12,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 * González-Bustamante, B. (2022, *forthcoming*). *Machine Learning and Political Events: Application of Semisupervised Approach to Produce a Data Set on Latin American Cabinets*. Presentation delivered at the II Training Data Lab Workshop, Virtual.
 
-* González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). *Digital Development and Open Government: Evidence from Chilean Local Governments*. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich.
+* González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). *Digital Development and Open Government: Evidence from Chilean Local Governments*. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-Zurich-eGov-2022.pdf)**.
 
 * González-Bustamante, B. (2022). *Machine Learning for the Study of Political Events: Application of Semisupervised Models on Latin American Archives*. Presentation delivered at the LatinR Conference, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LatinR-ML-2022.pdf)**. **[[Video on Youtube]](https://youtu.be/SNUWgkgqjuc)**.
 
