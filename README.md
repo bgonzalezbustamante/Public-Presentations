@@ -8,11 +8,11 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ## Selected Conference Presentations
 
-### 2022
+### [2022](/)
 
 * González-Bustamante, B. (2022, *forthcoming*). *Machine Learning and Political Events: Application of Semisupervised Approach to Produce a Data Set on Latin American Cabinets*. Presentation delivered at the II Training Data Lab Workshop, Virtual.
 
-* González-Bustamante, B., & Aguilar, D. (2022, *forthcoming*). *Digital Development and Open Government: Evidence from Chilean Local Governments*. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-Zurich-eGov-2022.pdf)**.
+* González-Bustamante, B., & Aguilar, D. (2022). *Digital Development and Open Government: Evidence from Chilean Local Governments*. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-Zurich-eGov-2022.pdf)**.
 
 * González-Bustamante, B. (2022). *Machine Learning for the Study of Political Events: Application of Semisupervised Models on Latin American Archives*. Presentation delivered at the LatinR Conference, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LatinR-ML-2022.pdf)**. **[[Video on Youtube]](https://youtu.be/SNUWgkgqjuc)**.
 
@@ -36,25 +36,9 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 * González-Bustamante, B., & Cisternas, C. (2022). *Seniority and Cosponsorship in the Chilean Lower House 2006-2018*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-Seniority-2022.pdf)**.
 
-### 2021
-
-* González-Bustamante, B. (2021). *The Use of Machine Learning for Public Affairs Research*. Presentation delivered the XII Chilean Congress of Public Administration, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-Congreso-AP-2021.pdf)**.
-
-* González-Bustamante, B. (2021). *Methodological Challenges and Innovations in the Study of Elites*. Presentation delivered at the XLV Annual Conference of the Brazilian National Association of Graduate Studies and Research in Social Sciences, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-ANPOCS-2021.pdf)**.
-
-* González-Bustamante, B. (2021). *R Applications in Social Sciences: Data Mining and Econometric Modelling*. Presentation delivered at the Political Science Method Lecture at the Universidad de Chile, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-R-INAP-2021.pdf)**.
-
-* González-Bustamante, B. (2021). *Vertically Integrated Project: Machine Learning Applications in Public Policy and Economics*. Presentation delivered at the VIP Project Workshop at the Universidad Mayor, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-VIP-Nociones-2021.pdf)**.
-
-* González-Bustamante, B. (2021). *Ministerial Stability During Presidential Approval Crises: The Moderating Effect of Ministers' Attributes on Dismissals in Brazil and Chile*. Presentation delivered at the XXVI World Congress of Political Science, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-IPSA-Ministers-2021.pdf)**.
-
-* Cisternas, C., & González-Bustamante, B. (2021). *Political Careers and Co-Sponsorship in the Chilean Lower House 2010-2018*. Presentation delivered at the XXVI World Congress of Political Science, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-IPSA-Cosponsorship-2021.pdf)**.
-
-* González-Bustamante, B. (2021). *Data Mining, Modelling and Machine Learning Applications for Social Sciences*. Presentation delivered at the I Training Data Lab Workshop, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2021/Beamer-DataLab-2021.pdf)**.
+### [2021](docs/2021.md)
 
 ### [2020](docs/2020.md)
-
-* González-Bustamante, B. (2020). *Evolution and Early Governmental Responses to COVID-19 in South America*. Presentation delivered at the Workshop of the School of Political Science and Public Administration at the Universidad de Talca, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2020/Beamer-UTalca-2020.pdf)**.
 
 **The complete list of presentations at conferences and seminars is available on my [CV repository](https://bgonzalezbustamante.github.io/CV-XeLaTeX/)**.
 
