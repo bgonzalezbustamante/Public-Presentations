@@ -8,33 +8,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ## Selected Conference Presentations
 
-### [2022](/)
-
-* González-Bustamante, B. (2022, *forthcoming*). *Machine Learning and Political Events: Application of Semisupervised Approach to Produce a Data Set on Latin American Cabinets*. Presentation delivered at the II Training Data Lab Workshop, Virtual.
-
-* González-Bustamante, B., & Aguilar, D. (2022). *Digital Development and Open Government: Evidence from Chilean Local Governments*. Presentation delivered at the Digital Democracy Workshop, Digital Society Initiative, University of Zurich, Zurich. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-Zurich-eGov-2022.pdf)**.
-
-* González-Bustamante, B. (2022). *Machine Learning for the Study of Political Events: Application of Semisupervised Models on Latin American Archives*. Presentation delivered at the LatinR Conference, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LatinR-ML-2022.pdf)**. **[[Video on Youtube]](https://youtu.be/SNUWgkgqjuc)**.
-
-* González-Bustamante, B., & Aguilar, D. (2022). *Integrated Repository on Local Government Indicators in Chile*. Presentation delivered at the LatinR Conference, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LatinR-LocalGovs-2022.pdf)**. **[[Video on Youtube]](https://youtu.be/AmUQnQbKabQ)**.
-
-* González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Local Governments*. Presentation delivered at the International Political Science Association Seminar Smart Cities and Open Government: Local Responses to Participation, Public Information, and Democracy, Madrid. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-IPSA-eGov-2022.pdf)**. **[[Video on Youtube]](https://youtu.be/BL9qaoqbdWk)**.
-
-* González-Bustamante, B. (2022). *Quantitative Methods for Studying Elites: Practical Applications, Biases and Potential.* Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-ALACIP-QM-Elites-2022.pdf)**.
-
-* González-Bustamante, B., & Aguilar, D. (2022). *Territorial Patterns in Digital Development and Open Government: Evidence from Chilean Municipalities*. Presentation delivered at the XI Latin American Congress of Political Science, Virtual. [In Spanish by D. Aguilar] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/ALACIP_22_Desarrollo_digital_y_gobierno_abierto.pdf)**.
-
-* González-Bustamante, B. (2022). *Ministerial Stability During Presidential Approval Crises: Evidence from Brazil and Chile*. Presentation delivered at the Political Studies Association Early Career Network Annual Conference, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-PSA-ECN-Ministers-2022.pdf)** **[[Video on Youtube]](https://youtu.be/Bdksuh7rfdk)**.
-
-* González-Bustamante, B. (2022). *Time-Dependent Data Encoding and Time-Varying Exposure Survival Models to Study Presidential Crises*. Presentation delivered at the R User Annual Conference, Virtual. [In English] **[[Permalink]](https://bgonzalezbustamante.github.io/Public-Presentations/2022/bgonzalezbustamante_user_R_2022)** **[[Video on YouTube]](https://youtu.be/kGmh27fAquM)**.
-
-* González-Bustamante, B. (2022). *Resignation Calls and Dismissals of Ministers in Latin America: Data Gathering using NLP and Machine Learning*. Presentation delivered at the XXXIX International Congress of the Latin American Studies Association, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LASA-RC-2022.pdf)**.
-
-* González-Bustamante, B. (2022). *Insights of a Number of Ongoing Research on Elites in Latin America: Topics, Methods and Possibilities for Comparison*. Presentation delivered at the XXXIX International Congress of the Latin American Studies Association, Virtual. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-LASA-Round-Table-2022.pdf)**.
-
-* González-Bustamante, B. (2022). *Resignation Calls and Ministerial Turnover in Latin America: Notes on Data Gathering using Machine Learning*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-RC-2022.pdf)**.
-
-* González-Bustamante, B., & Cisternas, C. (2022). *Seniority and Cosponsorship in the Chilean Lower House 2006-2018*. Presentation delivered at the Society for Latin American Studies Annual Conference, Bath, UK. [In English] **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2022/Beamer-SLAS-Seniority-2022.pdf)**.
+### [2022](docs/2022.md)
 
 ### [2021](docs/2021.md)
 
