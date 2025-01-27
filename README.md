@@ -1,12 +1,14 @@
 # Public-Presentations
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://raw.githubusercontent.com/training-datalab/badges/main/project_status/active.svg)](https://bgonzalezbustamante.github.io/Public-Presentations/docs/STATUS.html) [![ORCID](https://raw.githubusercontent.com/training-datalab/badges/main/orcid/orcid_bgb.svg)](http://orcid.org/0000-0003-1510-6820) [![License](https://raw.githubusercontent.com/training-datalab/badges/main/licenses/cc_by_4_0.svg)](LICENSE.md) [![Latex](https://raw.githubusercontent.com/training-datalab/badges/main/software/latex.svg)](https://www.latex-project.org/) [![tDL](https://raw.githubusercontent.com/training-datalab/badges/main/tDL.svg)](https://training-datalab.com/)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://raw.githubusercontent.com/training-datalab/badges/main/project_status/active.svg)](https://bgonzalezbustamante.github.io/Public-Presentations/docs/STATUS.html) [![ORCID](https://raw.githubusercontent.com/training-datalab/badges/main/orcid/orcid_bgb.svg)](http://orcid.org/0000-0003-1510-6820) [![License](https://raw.githubusercontent.com/training-datalab/badges/main/licenses/cc_by_4_0.svg)](LICENSE.md) [![Latex](https://raw.githubusercontent.com/training-datalab/badges/main/software/latex.svg)](https://www.latex-project.org/)
 
 ## Overview
 
 This repository contains a selection of Bastián González-Bustamante's recent public presentations at seminars and conferences in LaTeX Beamer and Xaringan formats.
 
 ## Selected Presentations
+
+### [2025](docs/2025.md)
 
 ### [2024](docs/2024.md)
 
