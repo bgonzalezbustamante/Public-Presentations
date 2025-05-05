@@ -10,6 +10,28 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ### [2025](docs/2025.md)
 
+* González-Bustamante, B. (2025, *forthcoming*). *Mapping Digital Governance and Artificial Intelligence in European Parliamentary Debates*. Presentation delivered at The Politics of AI: Actors, Policy, Geopolitics and Resistances Workshop, Barcelona d'Estudis Internacionals (IBEI), Barcelona, Spain.
+
+* González-Bustamante, B. (2025, *forthcoming*). *From Crises to Reshuffles: Shock Absorptive Capacity in Government Cabinets*. Presentation delivered at the WhoGov Workshop on Political Elites, University of Oslo, Oslo, Norway.
+
+* González-Bustamante, B. (2025, *forthcoming*). *Comparative Analysis of GPTs and Open-Source LLMs for Annotating Parliamentary Discourse*. Presentation delivered at the XXVIII World Congress of Political Science (IPSA), Seoul, South Korea.
+
+* González-Bustamante, B. (2025, *forthcoming*). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Pressentation delivered at the 15th Annual Conference of the European Political Science Association (EPSA), University Carlos III of Madrid, Madrid, Spain.
+
+* González-Bustamante, B. (2025, *forthcoming*). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Pressentation delivered at the Pre-Conference of the European Political Science Association (EPSA) on Large Language Models, University Carlos III of Madrid, Madrid, Spain.
+
+* Rivera, S., & González-Bustamante, B. (2025, *forthcoming*). *Toxicity and Digital Incivility during Political Deliberation: The Case of the Constitutional Convention in Chile*. Presentation delivered at the 75th Annual Conference of the International Communication Association, Hyatt Regency and Grand Hyatt, Denver, United States.
+
+* González-Bustamante, B. (2025, *forthcoming*). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the Annual Conference of the Comparative Agendas Project (CAP), University of Konstanz, Konstanz, Germany.
+
+* González-Bustamante, B., & van der Zwan, N. (2025, *forthcoming*). *AI-Driven Analysis of Pension Fund and Insurance Company Reports: Evaluating LLMs Classification Capabilities*. Presentation delivered at the European Consortium for Political Research Joint Sessions of Workshops (ECPR), Charles University, Prague, Czech Republic.
+
+* González-Bustamamante, B. (2025). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Presentation delivered at the 7th Annual COMPTEXT Conference, Vienna, Austria. **[Soon available]**
+
+* González-Bustamante, B., & van der Zwan, N. (2025). *Text-as-Data Approach to Examining Sustainable Investments: Insights from OECD Financial Institutions*. Presentation delivered at the 7th Annual COMPTEXT Conference, Vienna, Austria. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/COMPTEXT_VIDI_2025.pdf)**
+
+* González-Bustamante, B., & van der Zwan, N. (2025). *Institutional Determinants of Sustainable Investments: A Comparative Analysis of of European Asset Owners*. Presentation delivered at the 21st Netherlands Institute of Governance (NIG) Annual Conference, Ghent University, Ghent, Belgium. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/NIG_Conference_2025.pdf)**
+
 ### [2024](docs/2024.md)
 
 ### [2023](docs/2023.md)
@@ -19,8 +41,6 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 ### [2021](docs/2021.md)
 
 ### [2020](docs/2020.md)
-
-**The complete list of presentations at conferences and seminars is available on my [CV repository](https://bgonzalezbustamante.github.io/CV-XeLaTeX/)**. Although it may be a little outdated.
 
 ## License
 
