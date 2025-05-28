@@ -24,7 +24,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 * González-Bustamante, B. (2025, *forthcoming*). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the Annual Conference of the Comparative Agendas Project (CAP), University of Konstanz, Konstanz, Germany.
 
-* González-Bustamante, B., & van der Zwan, N. (2025, *forthcoming*). *AI-Driven Analysis of Pension Fund and Insurance Company Reports: Evaluating LLMs Classification Capabilities*. Presentation delivered at the European Consortium for Political Research Joint Sessions of Workshops (ECPR), Charles University, Prague, Czech Republic.
+* González-Bustamante, B., & van der Zwan, N. (2025). *AI-Driven Analysis of Pension Fund and Insurance Company Reports: Evaluating LLMs Classification Capabilities*. Presentation delivered at the European Consortium for Political Research Joint Sessions of Workshops (ECPR), Charles University, Prague, Czech Republic. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/ECPR_VIDI_2025.pdf)**
 
 * González-Bustamamante, B. (2025). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Presentation delivered at the 7th Annual COMPTEXT Conference, Vienna, Austria. **[Soon available]**
 
