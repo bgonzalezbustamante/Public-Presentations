@@ -16,13 +16,11 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 * González-Bustamante, B. (2025, *forthcoming*). *Comparative Analysis of GPTs and Open-Source LLMs for Annotating Parliamentary Discourse*. Presentation delivered at the XXVIII World Congress of Political Science (IPSA), Seoul, South Korea.
 
-* González-Bustamante, B. (2025, *forthcoming*). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Pressentation delivered at the 15th Annual Conference of the European Political Science Association (EPSA), University Carlos III of Madrid, Madrid, Spain.
+* González-Bustamante, B. (2025, *forthcoming*). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Pressentation delivered at the 15th Annual Conference of the European Political Science Association (EPSA), Universidad Carlos III de Madrid, Madrid, Spain.
 
-* González-Bustamante, B. (2025, *forthcoming*). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Pressentation delivered at the Pre-Conference of the European Political Science Association (EPSA) on Large Language Models, University Carlos III of Madrid, Madrid, Spain.
+* González-Bustamante, B. (2025, *forthcoming*). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Pressentation delivered at the Pre-Conference of the European Political Science Association (EPSA) on Large Language Models, Universidad Carlos III de Madrid, Madrid, Spain.
 
-* Rivera, S., & González-Bustamante, B. (2025, *forthcoming*). *Toxicity and Digital Incivility during Political Deliberation: The Case of the Constitutional Convention in Chile*. Presentation delivered at the 75th Annual Conference of the International Communication Association, Hyatt Regency and Grand Hyatt, Denver, United States.
-
-* González-Bustamante, B. (2025, *forthcoming*). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the Annual Conference of the Comparative Agendas Project (CAP), University of Konstanz, Konstanz, Germany.
+* González-Bustamante, B. (2025). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the Annual Conference of the Comparative Agendas Project (CAP), University of Konstanz, Konstanz, Germany. **[Soon available]**
 
 * González-Bustamante, B., & van der Zwan, N. (2025). *AI-Driven Text Analysis in the Political Economy of Sustainability: Hybrid Retrieval-Augmented Generation and LLM Multi-Agent Approach*. Presentation delivered at the European Consortium for Political Research Joint Sessions of Workshops (ECPR), Charles University, Prague, Czech Republic. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/ECPR_VIDI_2025.pdf)**
 
