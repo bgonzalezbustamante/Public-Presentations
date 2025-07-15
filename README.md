@@ -14,11 +14,11 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 * González-Bustamante, B. (2025, *forthcoming*). *From Crises to Reshuffles: Shock Absorptive Capacity in Government Cabinets*. Presentation delivered at the WhoGov Workshop on Political Elites, University of Oslo, Oslo, Norway.
 
-* González-Bustamante, B. (2025, *forthcoming*). *Comparative Analysis of GPTs and Open-Source LLMs for Annotating Parliamentary Discourse*. Presentation delivered at the XXVIII World Congress of Political Science (IPSA), Seoul, South Korea.
+* González-Bustamante, B. (2025). *Comparative Analysis of GPTs and Open-Source LLMs for Annotating Parliamentary Discourse*. Presentation delivered at the XXVIII World Congress of Political Science (IPSA), Seoul, South Korea. **[Soon available]**
 
-* González-Bustamante, B. (2025, *forthcoming*). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Pressentation delivered at the 15th Annual Conference of the European Political Science Association (EPSA), Universidad Carlos III de Madrid, Madrid, Spain.
+* González-Bustamante, B. (2025). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the 15th Annual Conference of the European Political Science Association (EPSA), Universidad Carlos III de Madrid, Madrid, Spain. **[Soon available]**
 
-* González-Bustamante, B. (2025, *forthcoming*). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Pressentation delivered at the Pre-Conference of the European Political Science Association (EPSA) on Large Language Models, Universidad Carlos III de Madrid, Madrid, Spain.
+* González-Bustamante, B. (2025). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Presentation delivered at the European Political Science Association (EPSA) Pre-Conference Workshop on Large Language Models, Universidad Carlos III de Madrid, Madrid, Spain. **[Soon available]**
 
 * González-Bustamante, B. (2025). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the Annual Conference of the Comparative Agendas Project (CAP), University of Konstanz, Konstanz, Germany. **[Soon available]**
 
