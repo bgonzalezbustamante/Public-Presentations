@@ -28,7 +28,7 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 * González-Bustamante, B., & van der Zwan, N. (2025). *Text-as-Data Approach to Examining Sustainable Investments: Insights from OECD Financial Institutions*. Presentation delivered at the 7th Annual COMPTEXT Conference, Vienna, Austria. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/COMPTEXT_VIDI_2025.pdf)**
 
-* González-Bustamante, B., & van der Zwan, N. (2025). *Institutional Determinants of Sustainable Investments: A Comparative Analysis of of European Asset Owners*. Presentation delivered at the 21st Netherlands Institute of Governance (NIG) Annual Conference, Ghent University, Ghent, Belgium. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/NIG_Conference_2025.pdf)**
+* González-Bustamante, B., & van der Zwan, N. (2025). *Institutional Determinants of Sustainable Investments: A Comparative Analysis of European Asset Owners*. Presentation delivered at the 21st Netherlands Institute of Governance (NIG) Annual Conference, Ghent University, Ghent, Belgium. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/NIG_Conference_2025.pdf)**
 
 ### [2024](docs/2024.md)
 
