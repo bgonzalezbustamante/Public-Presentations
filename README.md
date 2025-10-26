@@ -10,9 +10,9 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ### [2025](docs/2025.md)
 
-* González-Bustamante, B. (2025, *forthcoming*). *Mapping Digital Governance and Artificial Intelligence in European Parliamentary Debates*. Presentation delivered at The Politics of AI: Actors, Policy, Geopolitics and Resistances Workshop, Barcelona d'Estudis Internacionals (IBEI), Barcelona, Spain.
+* González-Bustamante, B. (2025). *Mapping Digital Governance and Artificial Intelligence in European Parliamentary Debates*. Presentation delivered at The Politics of AI: Actors, Policy, Geopolitics and Resistances Workshop, Barcelona d'Estudis Internacionals (IBEI), Barcelona, Spain. **[Soon available]**
 
-* González-Bustamante, B. (2025, *forthcoming*). *From Crises to Reshuffles: Shock Absorptive Capacity in Government Cabinets*. Presentation delivered at the WhoGov Workshop on Political Elites, University of Oslo, Oslo, Norway.
+* González-Bustamante, B. (2025). *From Crises to Reshuffles: Shock Absorptive Capacity in Government Cabinets*. Presentation delivered at the WhoGov Workshop on Political Elites, University of Oslo, Oslo, Norway. **[Soon available]**
 
 * González-Bustamante, B. (2025). *Comparative Analysis of GPTs and Open-Source LLMs for Annotating Parliamentary Discourse*. Presentation delivered at the XXVIII World Congress of Political Science (IPSA), Seoul, South Korea. **[Soon available]**
 
