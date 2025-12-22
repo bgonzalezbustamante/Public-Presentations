@@ -10,6 +10,10 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ### [2025](docs/2025.md)
 
+* González-Bustamante, B. (2025). *Text-as-Data in the Age of Large Language Models: Measuring Political Content, Policy Agendas and Sustainable Finance*. Presentation delivered at the Campus Fryslân, University of Groningen, Leeuwarden, Netherlands. **[Soon available]**
+
+* González-Bustamante, B. (2025). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the ODISSEI Conference for Computational Social Science 2025, Utrecht, Netherlands. **[[Presentation on Zenodo]](https://doi.org/10.5281/zenodo.17512636)**
+
 * González-Bustamante, B. (2025). *Mapping Digital Governance and Artificial Intelligence in European Parliamentary Debates*. Presentation delivered at The Politics of AI: Actors, Policy, Geopolitics and Resistances Workshop, Barcelona d'Estudis Internacionals (IBEI), Barcelona, Spain. **[Soon available]**
 
 * González-Bustamante, B. (2025). *From Crises to Reshuffles: Shock Absorptive Capacity in Government Cabinets*. Presentation delivered at the WhoGov Workshop on Political Elites, University of Oslo, Oslo, Norway. **[Soon available]**
