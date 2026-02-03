@@ -8,31 +8,13 @@ This repository contains a selection of Bastián González-Bustamante's recent p
 
 ## Selected Presentations
 
+### [2026](docs/2026.md)
+
+* González-Bustamante, B.,  & van der Zwan, N. (2026, *forthcoming*). *Retrieval-Augmented Generation and Multi-Agent LLM Orchestration for Analysing the Political Economy of Sustainability*. Presentation delivered at the Annual Conference of the European Political Science Society (EPSS), ICC Belfast, Belfast, United Kingdom. **[Soon available]**
+
+* González-Bustamante, B. (2026, *forthcoming*). *Text-as-Data in the Age of Large Language Models: Measuring Sustainable Finance*. Guest lecture delivered at the Campus Fryslân, University of Groningen, Leeuwarden, Netherlands. **[Soon available]**
+
 ### [2025](docs/2025.md)
-
-* González-Bustamante, B. (2025). *Text-as-Data in the Age of Large Language Models: Measuring Political Content, Policy Agendas and Sustainable Finance*. Presentation delivered at the Campus Fryslân, University of Groningen, Leeuwarden, Netherlands. **[Soon available]**
-
-* González-Bustamante, B. (2025). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the ODISSEI Conference for Computational Social Science 2025, Utrecht, Netherlands. **[[Presentation on Zenodo]](https://doi.org/10.5281/zenodo.17512636)**
-
-* González-Bustamante, B. (2025). *Mapping Digital Governance and Artificial Intelligence in European Parliamentary Debates*. Presentation delivered at The Politics of AI: Actors, Policy, Geopolitics and Resistances Workshop, Barcelona d'Estudis Internacionals (IBEI), Barcelona, Spain. **[Soon available]**
-
-* González-Bustamante, B. (2025). *From Crises to Reshuffles: Shock Absorptive Capacity in Government Cabinets*. Presentation delivered at the WhoGov Workshop on Political Elites, University of Oslo, Oslo, Norway. **[Soon available]**
-
-* González-Bustamante, B. (2025). *Comparative Analysis of GPTs and Open-Source LLMs for Annotating Parliamentary Discourse*. Presentation delivered at the XXVIII World Congress of Political Science (IPSA), Seoul, South Korea. **[Soon available]**
-
-* González-Bustamante, B. (2025). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the 15th Annual Conference of the European Political Science Association (EPSA), Universidad Carlos III de Madrid, Madrid, Spain. **[Soon available]**
-
-* González-Bustamante, B. (2025). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Presentation delivered at the European Political Science Association (EPSA) Pre-Conference Workshop on Large Language Models, Universidad Carlos III de Madrid, Madrid, Spain. **[Soon available]**
-
-* González-Bustamante, B. (2025). *Measuring Complexity and Reproducibility: A Comprehensive Benchmark of LLMs for Multilingual Policy Agenda Topic Annotation*. Presentation delivered at the Annual Conference of the Comparative Agendas Project (CAP), University of Konstanz, Konstanz, Germany. **[Soon available]**
-
-* González-Bustamante, B., & van der Zwan, N. (2025). *AI-Driven Text Analysis in the Political Economy of Sustainability: Hybrid Retrieval-Augmented Generation and LLM Multi-Agent Approach*. Presentation delivered at the European Consortium for Political Research Joint Sessions of Workshops (ECPR), Charles University, Prague, Czech Republic. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/ECPR_VIDI_2025.pdf)**
-
-* González-Bustamamante, B. (2025). *Charting Reproducibility and Performance: LLMs in Multilingual Toxic Speech Detection*. Presentation delivered at the 7th Annual COMPTEXT Conference, Vienna, Austria. **[Soon available]**
-
-* González-Bustamante, B., & van der Zwan, N. (2025). *Text-as-Data Approach to Examining Sustainable Investments: Insights from OECD Financial Institutions*. Presentation delivered at the 7th Annual COMPTEXT Conference, Vienna, Austria. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/COMPTEXT_VIDI_2025.pdf)**
-
-* González-Bustamante, B., & van der Zwan, N. (2025). *Institutional Determinants of Sustainable Investments: A Comparative Analysis of European Asset Owners*. Presentation delivered at the 21st Netherlands Institute of Governance (NIG) Annual Conference, Ghent University, Ghent, Belgium. **[[Permalink]](https://github.com/bgonzalezbustamante/Public-Presentations/blob/main/2025/NIG_Conference_2025.pdf)**
 
 ### [2024](docs/2024.md)
 
